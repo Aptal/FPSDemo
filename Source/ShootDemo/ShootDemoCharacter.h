@@ -36,6 +36,12 @@ class AShootDemoCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+
+	//UPROPERTY(EditAnyWhere, BluePrintReadWrite, category = "Time Info", meta = (AllowPrivateAccess = "true"))
+	//int Seconds = 60;
+
+	//FTimerHandle TH_CountDown;
+
 	
 public:
 	AShootDemoCharacter();
@@ -67,5 +73,6 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	//void CountDown();
 };
 

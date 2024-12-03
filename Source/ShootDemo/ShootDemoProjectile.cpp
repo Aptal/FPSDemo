@@ -3,6 +3,7 @@
 #include "ShootDemoProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Cube/BaseCube.h"
 
 AShootDemoProjectile::AShootDemoProjectile() 
 {
@@ -33,11 +34,22 @@ AShootDemoProjectile::AShootDemoProjectile()
 
 void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// 判断是否击中得分方块
+	TObjectPtr<ABaseCube> cube = Cast<ABaseCube>(OtherActor);
+	if (cube != nullptr) 
+	{
+		cube->OnHitByProjectile(GetInstigatorController());
+		Destroy();
+	}
+
 	// Only add impulse and destroy projectile if we hit a physics
+	// 模板默认的带物理模拟的charmCube
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
+		
+		UE_LOG(LogTemp, Warning, TEXT("The Actor's name is %s"), *OtherActor->GetName());
+		
 		Destroy();
 	}
 }

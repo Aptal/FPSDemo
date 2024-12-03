@@ -10,6 +10,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "ShootPlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,6 +44,9 @@ void AShootDemoCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	// set timer handle
+	/*GetWorldTimerManager().SetTimer(TH_CountDown, this, &AShootDemoCharacter::CountDown, 1.f, true, 0.0);*/
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -66,6 +71,32 @@ void AShootDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
+
+//void AShootDemoCharacter::CountDown()
+//{
+//	if (Seconds != 0)
+//	{
+//		Seconds = Seconds - 1;
+//	}
+//	else
+//	{
+//		// game over
+//		// 日志打印分数
+//		//AShootDemoGameMode* GameMode = Cast<AShootDemoGameMode>(UGameplayStatics::GetGameMode(this)); 有bug
+//		//GameMode->EndGame();
+//		APlayerController* pc = GetWorld()->GetFirstPlayerController();
+//		if (pc)
+//		{
+//			AShootPlayerState* PS = Cast<AShootPlayerState>(pc->PlayerState);
+//			if (PS != nullptr)
+//			{
+//				UE_LOG(LogTemp, Warning, TEXT("Player %s Score: %d"), *pc->GetName(), PS->GetPlayerScore());
+//				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("score : %d"), PS->GetPlayerScore()));
+//			}
+//		}
+//		GetWorldTimerManager().ClearTimer(TH_CountDown);
+//	}
+//}
 
 
 void AShootDemoCharacter::Move(const FInputActionValue& Value)
