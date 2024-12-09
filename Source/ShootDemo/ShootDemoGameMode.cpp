@@ -18,7 +18,7 @@ AShootDemoGameMode::AShootDemoGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
-	HUDClass = AShooterHUD::StaticClass();
+	/*HUDClass = AShooterHUD::StaticClass();*/
 
 	PlayerStateClass = AShootPlayerState::StaticClass();
 

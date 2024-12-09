@@ -36,11 +36,11 @@ public:
 protected:
 	/** 用于显示倒计时的文本 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock* CountdownText;
+	UTextBlock* CountdownText;
 
 	/** 用于显示玩家分数的文本 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	class UTextBlock* PlayerScoreText;
+	UTextBlock* PlayerScoreText;
 
 	/** 用于显示得分面板的容器 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
