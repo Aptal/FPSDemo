@@ -31,24 +31,38 @@ void ABaseCube::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//if (HasAuthority())
+	//{
+	//	Score = 500;
+	//}
 }
 
 void ABaseCube::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ABaseCube, score);
+	DOREPLIFETIME(ABaseCube, Score);
+	DOREPLIFETIME(ABaseCube, HitScale);
+	DOREPLIFETIME(ABaseCube, HitCount);
+	DOREPLIFETIME(ABaseCube, CubeMesh);
 }
 
 void ABaseCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	//if (HasAuthority())
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Server Score : %d"), Score);
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Client Score : %d"), Score);
+	//}
 }
 
 void ABaseCube::GetBuff(int importantBuff)
 {
-	score *= importantBuff;
+	Score *= importantBuff;
 	CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));
 }
 
@@ -56,7 +70,7 @@ void ABaseCube::GetBuff(int importantBuff)
 
 void ABaseCube::OnHitByProjectile(AController* InstigatingController)
 {
-	hitCount = FMath::Clamp(hitCount + 1, 0, 2);
+	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
 	// player 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	//if (APlayerController* PC = Cast<APlayerController>(InstigatingController))
@@ -68,7 +82,7 @@ void ABaseCube::OnHitByProjectile(AController* InstigatingController)
 			//FString msg = FString::Printf(TEXT("cube name :")) + this->GetName() + FString::Printf(TEXT("cube score %d : %d"), score);
 			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, msg);
 
-			PS->AddScore(score);
+			PS->AddScore(Score);
 
 			TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 			if (m_HUD)
@@ -83,11 +97,11 @@ void ABaseCube::OnHitByProjectile(AController* InstigatingController)
 	}
 
 
-	if (hitCount == 1) 
+	if (HitCount == 1) 
 	{
-		CubeMesh->SetWorldScale3D(GetActorScale3D() * hitScale);
+		CubeMesh->SetWorldScale3D(GetActorScale3D() * HitScale);
 	}
-	if (hitCount == 2)
+	if (HitCount == 2)
 	{
 		Destroy();
 	}

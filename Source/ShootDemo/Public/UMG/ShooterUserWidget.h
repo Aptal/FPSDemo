@@ -8,6 +8,8 @@
 
 
 class UCanvasPanel;
+class UTextBlock;
+class UVerticalBox;
 
 UCLASS()
 class SHOOTDEMO_API UShooterUserWidget : public UUserWidget

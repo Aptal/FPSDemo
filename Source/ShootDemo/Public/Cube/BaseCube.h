@@ -28,18 +28,18 @@ public:
 	void OnHitByProjectile(AController* InstigatingController);
 
 	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")
-	int score = 2;
+	int Score = 2;
 
-	UPROPERTY(EditAnyWhere, category = "Cube Info")
-	float hitScale = 0.5;
+	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")
+	float HitScale = 0.5;
 
-	UPROPERTY(BlueprintReadOnly, category = "Cube Info")
-	int hitCount = 0;
+	UPROPERTY(BlueprintReadOnly, Replicated, category = "Cube Info")
+	int HitCount = 0;
 
 	UPROPERTY(EditAnyWhere, Category = "CubeMesh")
 	TObjectPtr < UBoxComponent> CubeCollisonComponent;
 
-	UPROPERTY(EditAnyWhere, Category = "CubeMesh")
+	UPROPERTY(EditAnyWhere, Replicated, Category = "CubeMesh")
 	TObjectPtr<UStaticMeshComponent> CubeMesh;
 
 };

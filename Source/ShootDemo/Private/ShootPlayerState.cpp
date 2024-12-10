@@ -6,6 +6,9 @@
 
 AShootPlayerState::AShootPlayerState()
 {
+	PlayerScore = 0;
+
+	bReplicates = true;
 }
 
 void AShootPlayerState::AddScore(int32 ScoreAmount)
@@ -15,15 +18,26 @@ void AShootPlayerState::AddScore(int32 ScoreAmount)
 	//OnRep_Score();
 }
 
-void AShootPlayerState::OnRep_Score()
+void AShootPlayerState::OnRep_ShootScore()
 {
-	UE_LOG(LogTemp, Log, TEXT("Player's score updated: %d"), PlayerScore);
+	UE_LOG(LogTemp, Warning, TEXT("Player's score updated: %d"), PlayerScore);
 }
-//
-//void AShootPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//
-//	// 注册同步变量
-//	DOREPLIFETIME(AShootPlayerState, PlayerScore);
-//}
+
+void AShootPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//if (HasAuthority())
+	//{
+	//	Health = 500.f;
+	//}
+}
+
+void AShootPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// 注册同步变量
+	DOREPLIFETIME(AShootPlayerState, Health);
+	DOREPLIFETIME(AShootPlayerState, PlayerScore);
+}

@@ -20,20 +20,14 @@ bool UShooterUserWidget::Initialize()
 		return false;
 	}
 
-	//rootPanel = Cast<UCanvasPanel>(GetRootWidget());
-	//if (rootPanel)
-	//{
-	//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("init root Panel --------")));
-	//}
-
-	if (UTextBlock* countText = Cast<UTextBlock>(GetWidgetFromName("CountdownText")))
+	if (CountdownText == nullptr)
 	{
-		CountdownText = countText;
+		CountdownText = Cast<UTextBlock>(GetWidgetFromName("CountdownText"));
 	}
 
-	if (UTextBlock* scoreText = Cast<UTextBlock>(GetWidgetFromName("PlayerScoreText"))) 
+	if (PlayerScoreText == nullptr) 
 	{
-		PlayerScoreText = scoreText;
+		PlayerScoreText = Cast<UTextBlock>(GetWidgetFromName("PlayerScoreText"));
 	}
 
 	return true;
