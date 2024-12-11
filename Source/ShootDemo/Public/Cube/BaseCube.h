@@ -37,7 +37,7 @@ public:
 	int HitCount = 0;
 
 	UPROPERTY(EditAnyWhere, Category = "CubeMesh")
-	TObjectPtr < UBoxComponent> CubeCollisonComponent;
+	TObjectPtr <UBoxComponent> CubeCollisonComponent;
 
 	UPROPERTY(EditAnyWhere, Replicated, Category = "CubeMesh")
 	TObjectPtr<UStaticMeshComponent> CubeMesh;

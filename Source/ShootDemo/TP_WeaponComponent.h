@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
 	USoundBase* FireSound;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	USoundBase* EmptySound;
+
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
@@ -49,6 +52,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	// »»µ¯
+	void Reload();
+
+	void UpdateAmmoText(APlayerController* PlayerController);
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
@@ -57,4 +65,12 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	AShootDemoCharacter* Character;
+
+public:
+	
+	UPROPERTY()
+	int AmmoCurrent = 0;
+
+	UPROPERTY(EditAnyWhere)
+	int AmmoMax;
 };

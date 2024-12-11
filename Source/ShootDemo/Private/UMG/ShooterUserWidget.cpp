@@ -11,6 +11,9 @@ UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializ
 {
 	CountdownText = nullptr;
 	PlayerScoreText = nullptr;
+	AmmoCurrentText = nullptr;
+	AmmoMaxText = nullptr;
+
 }
 
 bool UShooterUserWidget::Initialize()
@@ -30,6 +33,16 @@ bool UShooterUserWidget::Initialize()
 		PlayerScoreText = Cast<UTextBlock>(GetWidgetFromName("PlayerScoreText"));
 	}
 
+	if (AmmoCurrentText == nullptr)
+	{
+		AmmoCurrentText = Cast<UTextBlock>(GetWidgetFromName("AmmoCurrentText"));
+	}
+
+	if (AmmoMaxText == nullptr)
+	{
+		AmmoMaxText = Cast<UTextBlock>(GetWidgetFromName("AmmoMaxText"));
+	}
+
 	return true;
 }
 
@@ -44,6 +57,22 @@ void UShooterUserWidget::UpdateCountdown(const int32 RemainingTime)
 	if (CountdownText)
 	{
 		CountdownText->SetText(FText::FromString(FString::Printf(TEXT("Count Down: %d"), RemainingTime)));
+	}
+}
+
+void UShooterUserWidget::UpdateAmmoCurrent(const int32 AmmoCurrent)
+{
+	if (AmmoCurrentText)
+	{
+		AmmoCurrentText->SetText(FText::FromString(FString::Printf(TEXT("%d"), AmmoCurrent)));
+	}
+}
+
+void UShooterUserWidget::UpdateAmmoMax(const int32 AmmoMax)
+{
+	if (AmmoMaxText)
+	{
+		AmmoMaxText->SetText(FText::FromString(FString::Printf(TEXT("%d"), AmmoMax)));
 	}
 }
 

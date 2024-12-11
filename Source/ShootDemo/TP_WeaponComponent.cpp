@@ -12,12 +12,17 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
+#include "UMG/ShooterHUD.h"
+#include "UMG/ShooterUserWidget.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	AmmoMax = 10;
+	AmmoCurrent = AmmoMax;
 }
 
 
@@ -25,6 +30,16 @@ void UTP_WeaponComponent::Fire()
 {
 	if (Character == nullptr || Character->GetController() == nullptr)
 	{
+		return;
+	}
+
+	if (AmmoCurrent == 0)
+	{
+		if (EmptySound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, EmptySound, Character->GetActorLocation());
+		}
+
 		return;
 	}
 
@@ -45,6 +60,9 @@ void UTP_WeaponComponent::Fire()
 	
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<AShootDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			AmmoCurrent--;
+			UpdateAmmoText(PlayerController);
 		}
 	}
 	
@@ -62,6 +80,22 @@ void UTP_WeaponComponent::Fire()
 		if (AnimInstance != nullptr)
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
+		}
+	}
+}
+
+void UTP_WeaponComponent::Reload()
+{
+}
+
+void UTP_WeaponComponent::UpdateAmmoText(APlayerController* PlayerController)
+{
+	if (AShooterHUD* m_HUD = Cast<AShooterHUD>(PlayerController->GetHUD()))
+	{
+		if (TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance))
+		{
+			m_UserWidget->UpdateAmmoMax(AmmoMax);
+			m_UserWidget->UpdateAmmoCurrent(AmmoCurrent);
 		}
 	}
 }
@@ -97,6 +131,8 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 			// Fire
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 		}
+
+		UpdateAmmoText(PlayerController);
 	}
 
 	return true;

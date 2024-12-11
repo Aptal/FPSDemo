@@ -27,12 +27,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void UpdateCountdown(const int32 RemainingTime);
 
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+	void UpdateAmmoCurrent(const int32 AmmoCurrent);
+
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+	void UpdateAmmoMax(const int32 AmmoMax);
+
 	/** 更新玩家当前分数 */
-	UFUNCTION(BlueprintCallable, Category = "HUD")
+	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
 	void UpdatePlayerScore(const int32& PlayerScore);
 
 	/** 显示分数面板 */
-	UFUNCTION(BlueprintCallable, Category = "HUD")
+	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
 	void ShowScorePanel(const TArray<int32>& PlayerScores);
 
 protected:
@@ -48,5 +54,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	class UVerticalBox* ScorePanel;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UTextBlock* AmmoCurrentText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UTextBlock* AmmoMaxText;
+
 	UCanvasPanel* rootPanel;
 };

@@ -18,10 +18,11 @@ AShootDemoGameMode::AShootDemoGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
-	/*HUDClass = AShooterHUD::StaticClass();*/
+	HUDClass = AShooterHUD::StaticClass();
 
 	PlayerStateClass = AShootPlayerState::StaticClass();
 
+	bReplicates = true;
 }
 
 void AShootDemoGameMode::BeginPlay()
@@ -56,6 +57,14 @@ void AShootDemoGameMode::InitGameState()
 	/*InitScoreCube();*/
 }
 
+void AShootDemoGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// 注册同步变量
+	DOREPLIFETIME(AShootDemoGameMode, Seconds);
+}
+
 void AShootDemoGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -64,7 +73,6 @@ void AShootDemoGameMode::Tick(float DeltaTime)
 
 void AShootDemoGameMode::InitScoreCube()
 {
-	TArray<AActor*> ScoreCube;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCube::StaticClass(), ScoreCube);
 	//UGameplayStatics::GetAllActorsWithTag(GetWorld(), TEXT("BaseCube"), ScoreCube);
 	//UE_LOG(LogTemp, Warning, TEXT("actors count : %d"), ScoreCube.Num());
@@ -79,7 +87,7 @@ void AShootDemoGameMode::InitScoreCube()
 		}
 	}*/
 
-	importantGoalCount = FMath::Clamp(importantGoalCount, 0, ScoreCube.Num());
+	ImportantGoalCount = FMath::Clamp(ImportantGoalCount, 0, ScoreCube.Num());
 	TArray<int32> Numbers;
 	for (int32 i = 0; i < ScoreCube.Num(); i++)
 	{
@@ -91,36 +99,46 @@ void AShootDemoGameMode::InitScoreCube()
 		Numbers.Swap(i, RandIndex);
 	}
 
-	for (int32 i = 0; i < importantGoalCount; i++)
+	for (int32 i = 0; i < ImportantGoalCount; i++)
 	{
 		if (ABaseCube* cube = Cast<ABaseCube>(ScoreCube[Numbers[i]]))
 		{
-			cube->GetBuff(importantBuff);
+			cube->GetBuff(ImportantBuff);
 		}
 	}
 }
 
 void AShootDemoGameMode::UpdateCountdown()
 {
-	if (Seconds != 0)
+	//if (Seconds != 0)
+	//{
+	//	Seconds = Seconds - 1;
+	//	TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	//	if (m_HUD)
+	//	{
+	//		TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance);
+	//		if (m_UserWidget)
+	//		{
+	//			m_UserWidget->UpdateCountdown(Seconds);
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	//	// game over
+	//	// 日志打印分数
+	//	EndGame();
+	//	GetWorldTimerManager().ClearTimer(TH_CountDown);
+	//}
+	if (HasAuthority())
 	{
-		Seconds = Seconds - 1;
-		TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		if (m_HUD)
+		Seconds--;
+		if (Seconds <= 0)
 		{
-			TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance);
-			if (m_UserWidget)
-			{
-				m_UserWidget->UpdateCountdown(Seconds);
-			}
+			EndGame();
 		}
-	}
-	else
-	{
-		// game over
-		// 日志打印分数
-		EndGame();
-		GetWorldTimerManager().ClearTimer(TH_CountDown);
+		// 通知客户端更新时间显示等
+		Multicast_SyncSeconds(Seconds);
 	}
 }
 
@@ -155,4 +173,28 @@ void AShootDemoGameMode::EndGame()
 	//}
 
 	UE_LOG(LogTemp, Log, TEXT("Total Score: %d"), TotalScore);
+}
+
+void AShootDemoGameMode::OnRep_Seconds()
+{
+	TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (m_HUD)
+	{
+		TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance);
+		if (m_UserWidget)
+		{
+			m_UserWidget->UpdateCountdown(Seconds);
+		}
+	}
+}
+
+void AShootDemoGameMode::Multicast_SyncSeconds(int NewSeconds)
+{
+	if (HasAuthority())
+	{
+		Seconds = NewSeconds;
+		// 广播给所有客户端（包括本地客户端）
+		//Multicast_SyncSeconds(Seconds);
+		OnRep_Seconds();
+	}
 }
