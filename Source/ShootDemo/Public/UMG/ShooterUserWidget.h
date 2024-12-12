@@ -20,9 +20,6 @@ public:
 
 	UShooterUserWidget(const FObjectInitializer& objectInitializer);
 
-	virtual bool Initialize() override;
-	virtual void NativeConstruct() override;
-
 	/** 更新倒计时 */
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void UpdateCountdown(const int32 RemainingTime);
@@ -42,6 +39,10 @@ public:
 	void ShowScorePanel(const TArray<int32>& PlayerScores);
 
 protected:
+
+	virtual bool Initialize() override;
+	virtual void NativeConstruct() override;
+
 	/** 用于显示倒计时的文本 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UTextBlock* CountdownText;

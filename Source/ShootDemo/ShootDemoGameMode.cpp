@@ -136,6 +136,7 @@ void AShootDemoGameMode::UpdateCountdown()
 		if (Seconds <= 0)
 		{
 			EndGame();
+			GetWorldTimerManager().ClearTimer(TH_CountDown);
 		}
 		// 通知客户端更新时间显示等
 		Multicast_SyncSeconds(Seconds);
