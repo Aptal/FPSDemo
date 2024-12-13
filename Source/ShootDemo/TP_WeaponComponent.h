@@ -7,6 +7,7 @@
 #include "TP_WeaponComponent.generated.h"
 
 class AShootDemoCharacter;
+class AShootDemoPlayerController;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SHOOTDEMO_API UTP_WeaponComponent : public USkeletalMeshComponent
@@ -55,7 +56,7 @@ public:
 	// »»µ¯
 	void Reload();
 
-	void UpdateAmmoText(APlayerController* PlayerController);
+	void UpdateAmmoText(AShootDemoPlayerController* PlayerController);
 
 protected:
 	/** Ends gameplay for this component. */

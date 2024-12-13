@@ -7,6 +7,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "Cube/BaseCube.h"
 #include "ShootPlayerState.h"
+#include "ShootDemoPlayerController.h"
 #include "UMG/ShooterHUD.h"
 #include "UMG/ShooterUserWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -143,13 +144,31 @@ void AShootDemoGameMode::UpdateCountdown()
 	}
 }
 
+TArray<int32>& AShootDemoGameMode::GetScoreList() const
+{
+	// TODO: insert return statement here
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		TObjectPtr<APlayerController> PlayerController = It->Get();
+		if (PlayerController)
+		{
+			TObjectPtr<AShootPlayerState> PlayerState = Cast<AShootPlayerState>(PlayerController->PlayerState);
+			if (PlayerState)
+			{
+				PlayerScores.Add(PlayerState->GetPlayerScore());  // 假设 PlayerState 有一个 GetScore() 方法
+			}
+		}
+	}
+	return const_cast<TArray<int32>&>(PlayerScores);
+}
+
 void AShootDemoGameMode::EndGame()
 {
-
-	//FConstPlayerControllerIterator PlayerControllers = GetWorld()->GetPlayerControllerIterator();
-	//TArray<APlayerController*> PlayerControllers = GetWorld()->GetPlayerControllerIterator();
 	int32 TotalScore = 0;
-	APlayerController* pc = GetWorld()->GetFirstPlayerController();
+	TObjectPtr<APlayerController> pc = GetWorld()->GetFirstPlayerController();
+	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(pc->GetCharacter());
+	Character->ShowScorePanel();
+
 	if (pc)
 	{
 		AShootPlayerState* PS = Cast<AShootPlayerState>(pc->PlayerState);
@@ -178,14 +197,10 @@ void AShootDemoGameMode::EndGame()
 
 void AShootDemoGameMode::OnRep_Seconds()
 {
-	TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	if (m_HUD)
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController && PlayerController->GameInfoUI)
 	{
-		TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance);
-		if (m_UserWidget)
-		{
-			m_UserWidget->UpdateCountdown(Seconds);
-		}
+		PlayerController->GameInfoUI->UpdateCountdown(Seconds);
 	}
 }
 

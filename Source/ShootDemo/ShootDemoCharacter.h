@@ -37,6 +37,8 @@ class AShootDemoCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_ScorePanel;
 	
 public:
 	AShootDemoCharacter();
@@ -56,6 +58,10 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+public:
+	void ShowScorePanel();
+	void HideScorePanel();
 
 protected:
 	// APawn interface

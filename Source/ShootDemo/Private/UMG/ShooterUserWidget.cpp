@@ -4,7 +4,7 @@
 #include "UMG/ShooterUserWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
-#include "Components/TextBlock.h"
+#include "Components/CanvasPanel.h"
 
 UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializer)
 	: Super(objectInitializer)
@@ -13,7 +13,7 @@ UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializ
 	PlayerScoreText = nullptr;
 	AmmoCurrentText = nullptr;
 	AmmoMaxText = nullptr;
-
+	TotalScoreText = nullptr;
 }
 
 bool UShooterUserWidget::Initialize()
@@ -42,6 +42,12 @@ bool UShooterUserWidget::Initialize()
 	{
 		AmmoMaxText = Cast<UTextBlock>(GetWidgetFromName("AmmoMaxText"));
 	}
+
+	ScorePanel = Cast<UCanvasPanel>(GetWidgetFromName("ScorePanel"));
+	HideScorePanel();
+
+	ScoreInfoBox = Cast<UVerticalBox>(GetWidgetFromName("ScoreInfoBox"));
+	TotalScoreText = Cast<UTextBlock>(GetWidgetFromName("TotalScoreText"));
 
 	return true;
 }
@@ -88,15 +94,29 @@ void UShooterUserWidget::ShowScorePanel(const TArray<int32>& PlayerScores)
 {
 	if (ScorePanel)
 	{
-		ScorePanel->ClearChildren();
+		int32 totalScore = 0;
+		ScoreInfoBox->ClearChildren();
 		for (int32 i = 0; i < PlayerScores.Num(); ++i)
 		{
+			totalScore += PlayerScores[i];
 			UTextBlock* ScoreText = NewObject<UTextBlock>(this);
 			if (ScoreText)
 			{
 				ScoreText->SetText(FText::FromString(FString::Printf(TEXT("Player %d: %d"), i + 1, PlayerScores[i])));
-				ScorePanel->AddChildToVerticalBox(ScoreText);
+				ScoreInfoBox->AddChildToVerticalBox(ScoreText);
 			}
 		}
+
+		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("All Players Total Scores: %d"), totalScore)));
+
+		ScorePanel->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void UShooterUserWidget::HideScorePanel()
+{
+	if (ScorePanel)
+	{
+		ScorePanel->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

@@ -12,7 +12,7 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
-#include "UMG/ShooterHUD.h"
+#include "ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
 
 // Sets default values for this component's properties
@@ -49,7 +49,7 @@ void UTP_WeaponComponent::Fire()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
+			AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController());
 			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
 			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
@@ -88,15 +88,12 @@ void UTP_WeaponComponent::Reload()
 {
 }
 
-void UTP_WeaponComponent::UpdateAmmoText(APlayerController* PlayerController)
+void UTP_WeaponComponent::UpdateAmmoText(AShootDemoPlayerController* PlayerController)
 {
-	if (AShooterHUD* m_HUD = Cast<AShooterHUD>(PlayerController->GetHUD()))
+	if (PlayerController && PlayerController->GameInfoUI)
 	{
-		if (TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance))
-		{
-			m_UserWidget->UpdateAmmoMax(AmmoMax);
-			m_UserWidget->UpdateAmmoCurrent(AmmoCurrent);
-		}
+		PlayerController->GameInfoUI->UpdateAmmoMax(AmmoMax);
+		PlayerController->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
 	}
 }
 
@@ -118,7 +115,7 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 	Character->AddInstanceComponent(this);
 
 	// Set up action bindings
-	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	if (AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{

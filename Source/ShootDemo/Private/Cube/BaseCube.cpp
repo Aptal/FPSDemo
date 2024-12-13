@@ -6,7 +6,7 @@
 #include "Cube/BaseCube.h"
 #include "Components/BoxComponent.h"
 #include "ShootPlayerState.h"
-#include "UMG/ShooterHUD.h"
+#include "../ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
 
 // Sets default values
@@ -71,27 +71,18 @@ void ABaseCube::GetBuff(int importantBuff)
 void ABaseCube::OnHitByProjectile(AController* InstigatingController)
 {
 	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
-	// player 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	//if (APlayerController* PC = Cast<APlayerController>(InstigatingController))
+
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
+
 	if(PlayerController)
 	{
 		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
 		{
-
-			//FString msg = FString::Printf(TEXT("cube name :")) + this->GetName() + FString::Printf(TEXT("cube score %d : %d"), score);
-			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::White, msg);
-
 			PS->AddScore(Score);
 
-			TObjectPtr<AShooterHUD> m_HUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-			if (m_HUD)
+			if (PlayerController->GameInfoUI)
 			{
-				TObjectPtr<UShooterUserWidget> m_UserWidget = Cast<UShooterUserWidget>(m_HUD->WidgetInstance);
-				if (m_UserWidget)
-				{
-					m_UserWidget->UpdatePlayerScore(PS->GetPlayerScore());
-				}
+				PlayerController->GameInfoUI->UpdatePlayerScore(PS->GetPlayerScore());
 			}
 		}
 	}

@@ -38,6 +38,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
 	void ShowScorePanel(const TArray<int32>& PlayerScores);
 
+	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
+	void HideScorePanel();
+
+
+
 protected:
 
 	virtual bool Initialize() override;
@@ -53,7 +58,10 @@ protected:
 
 	/** 用于显示得分面板的容器 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
-	class UVerticalBox* ScorePanel;
+	UCanvasPanel* ScorePanel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UTextBlock* TotalScoreText;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UTextBlock* AmmoCurrentText;
@@ -61,5 +69,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UTextBlock* AmmoMaxText;
 
-	UCanvasPanel* rootPanel;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UVerticalBox* ScoreInfoBox;
 };

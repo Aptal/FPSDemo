@@ -33,6 +33,8 @@ public:
 
 	void UpdateCountdown();
 
+	TArray<int32>& GetScoreList() const;
+
 	void EndGame();
 
 	TMap<FName, int> hitCount;
@@ -56,6 +58,9 @@ public:
 
 	// 函数声明，用于将服务器的时间同步到客户端
 	void Multicast_SyncSeconds(int NewSeconds);
+
+protected:
+	mutable TArray<int32> PlayerScores;
 };
 
 

@@ -20,6 +20,7 @@ protected:
 
 public:
 
+	UPROPERTY()
 	TObjectPtr<UShooterUserWidget> WidgetInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UserWidget")

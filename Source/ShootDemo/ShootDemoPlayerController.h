@@ -7,6 +7,8 @@
 #include "ShootDemoPlayerController.generated.h"
 
 class UInputMappingContext;
+class AShooterHUD;
+class UShooterUserWidget;
 
 /**
  *
@@ -28,4 +30,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	// End Actor interface
+
+	void InitHUDWidget();
+
+public:
+	UPROPERTY()
+	TObjectPtr<AShooterHUD> GameInfoHUD;
+
+	UPROPERTY()
+	TObjectPtr<UShooterUserWidget> GameInfoUI;
+
 };

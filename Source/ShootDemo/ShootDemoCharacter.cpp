@@ -11,6 +11,9 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "ShootPlayerState.h"
+#include "ShootDemoPlayerController.h"
+#include "UMG/ShooterUserWidget.h"
+#include "ShootDemoGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -64,11 +67,17 @@ void AShootDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AShootDemoCharacter::Look);
+
+		EnhancedInputComponent->BindAction(IA_ScorePanel, ETriggerEvent::Started, this, &AShootDemoCharacter::ShowScorePanel);
+		EnhancedInputComponent->BindAction(IA_ScorePanel, ETriggerEvent::Completed, this, &AShootDemoCharacter::HideScorePanel);
+
+
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+
 }
 
 void AShootDemoCharacter::Move(const FInputActionValue& Value)
@@ -94,5 +103,34 @@ void AShootDemoCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void AShootDemoCharacter::ShowScorePanel()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("press")));
+
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
+	if (PlayerController)
+	{
+		if (PlayerController->GameInfoUI)
+		{
+			TObjectPtr<AShootDemoGameMode> GameMode = Cast<AShootDemoGameMode>(GetWorld()->GetAuthGameMode());
+			PlayerController->GameInfoUI->ShowScorePanel(GameMode->GetScoreList());
+		}
+	}
+}
+
+void AShootDemoCharacter::HideScorePanel()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("release")));
+
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
+	if (PlayerController)
+	{
+		if (PlayerController->GameInfoUI)
+		{
+			PlayerController->GameInfoUI->HideScorePanel();
+		}
 	}
 }

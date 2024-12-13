@@ -4,6 +4,8 @@
 #include "ShootDemoPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "UMG/ShooterHUD.h"
+#include "UMG/ShooterUserWidget.h"
 
 void AShootDemoPlayerController::BeginPlay()
 {
@@ -14,5 +16,17 @@ void AShootDemoPlayerController::BeginPlay()
 	{
 		// add the mapping context so we get controls
 		Subsystem->AddMappingContext(InputMappingContext, 0);
+	}
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShootDemoPlayerController::InitHUDWidget);
+	
+}
+
+void AShootDemoPlayerController::InitHUDWidget()
+{
+	GameInfoHUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (GameInfoHUD)
+	{
+		GameInfoUI = GameInfoHUD->WidgetInstance;
 	}
 }
