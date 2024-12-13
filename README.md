@@ -23,14 +23,18 @@
 ### 物件规则：
 - [x] 1. 射击命中方块，获得积分X (Score) 分
 - [x] 2. 子弹命中方块后销毁
-- [x] 3. 方块被子弹命中后，缩放为Y (HitScale) 倍，再次被命中后销毁
+- [x] 3. 方块被子弹命中后，缩放为Y (HitScale) 倍，再次被命中后销毁  
+[查看积分、缩放设置面板](#CubeInfo)  
 
 ### 游戏流程：
 - [x] 1. 游戏开始时随机N (ImportantGoalCount) 个方块成为“重要目标”，射击命中后获得双倍积分
-- [x] 2. 游戏开始后限时T (Seconds) 秒，时间到后游戏结算，打印日志输出每个玩家获得的积分和所有玩家获得的总积分
+- [x] 2. 游戏开始后限时T (Seconds) 秒，时间到后游戏结算，打印日志输出每个玩家获得的积分和所有玩家获得的总积分  
+[查看时间，重要目标设置面板](#GameInfo)  
+[击中大小对比](#HitShowImg)
 
 ### 附加题
-- [x] 1. 利用UMG制作结算UI替代日志打印
+- [x] 1. 利用UMG制作结算UI替代日志打印  
+[结算面板展示](#ScorePanelImg)
 - [-] 2. 支持多人联机
 
 
@@ -41,6 +45,27 @@
 
 
 # 完成情况说明
+
+## 截图展示
+
+#### 积分、缩放设置面板
+<a name="CubeInfo"></a>
+![积分、缩放设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-1.png?raw=true "积分、缩放设置面板")
+
+#### 时间，重要目标设置面板
+<a name="GameInfo"></a>
+![时间，重要目标设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-2.png?raw=true "时间，重要目标设置面板")
+
+#### 击中大小、重要目标对比
+“重要目标”被标记为黄金色，击中一次缩小一倍，两次消失
+<a name="HitShowImg"></a>
+![击中大小对比](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-3.png?raw=true)
+
+#### 结算面板（每个玩家分数，总分数）
+<a name="ScorePanelImg"></a>
+![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-4.png?raw=true)
+
+
 ## 12.04
 - 第二周目标基本完成：作业中的游戏相关属性括号内的名称均在蓝图中暴露
 - 差多人网络同步：未开始
