@@ -1,4 +1,5 @@
 # FPSDemo
+2024腾讯游戏客户端公开课相关  
 基于UE5.4的游戏First Person模板开发
 
 # 课堂笔记
@@ -13,6 +14,9 @@
 
 ## 第四周
 [《UMG界面》](https://www.mubu.com/doc/1I4ao6djV2B)
+
+## 第五周
+[《UE5的骨骼动画》](https://www.mubu.com/doc/AejDxU9ZfB)
 
 # 作业完成情况
 ## 第一周
@@ -35,13 +39,19 @@
 ### 附加题
 - [x] 1. 利用UMG制作结算UI替代日志打印  
 [结算面板展示](#ScorePanelImg)
-- [-] 2. 支持多人联机
+- [ ] 2. 支持多人联机
 
 
 ## 第四周
-- [x] 1.实现登录界面（需要输入用户名和密码，其中密码加密显示，有确认按钮）
-- [ ] 2.实现加载界面（要有动画表传达正在加载）
+- [x] 1.实现登录界面（需要输入用户名和密码，其中密码加密显示，有确认按钮）  
+[登陆页面展示](#LoginImg)
+- [x] 2.实现加载界面（要有动画表传达正在加载）
 - [x] 3.实现射击游戏操作面板（要有血条，子弹数，击中玩家会发生变化的准星
+
+## 第五周
+- [ ] 1.实现敌人的基础移动动画蓝图，并尽可能优化表现。
+- [ ] 2.实现敌人的死亡动画，并尽可能优化表现（如添加多方向死亡动画等）。
+- [ ] 3.实现近战击败敌人的功能和动画表现。（选做）
 
 
 # 完成情况说明
@@ -65,8 +75,15 @@
 <a name="ScorePanelImg"></a>
 ![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-4.png?raw=true)
 
+#### 登陆页面
+<a name="LoginImg"></a>
+![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-1.png?raw=true)
 
-## 12.04
+### 12.15
+- 新建gameinstance会出现访问不到map（索引为空，打开level失败）的情况，暂时采用从ButtonClick中 清空widget->打开loading widget-> delay 3s->打开新level
+
+
+### 12.04
 - 第二周目标基本完成：作业中的游戏相关属性括号内的名称均在蓝图中暴露
 - 差多人网络同步：未开始
 - UMG结算UI：类似当前HUD的形式，框架基本完成

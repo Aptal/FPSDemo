@@ -22,7 +22,6 @@ ABaseCube::ABaseCube()
 	CubeMesh->SetupAttachment(RootComponent);
 
 	bReplicates = true;
-	UE_LOG(LogTemp, Warning, TEXT("cube begin : init "));
 
 }
 

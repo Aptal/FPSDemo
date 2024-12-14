@@ -5,6 +5,9 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "TimerManager.h"
+#include "ShootGameInstance.h"
 
 ULoginUserWidget::ULoginUserWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -64,8 +67,32 @@ void ULoginUserWidget::OnLoginButtonClicked()
 
     UE_LOG(LogTemp, Warning, TEXT("Login button clicked"));
 
-    // 示例：切换到对战关卡
-    UGameplayStatics::OpenLevel(this, TEXT("FirstPersonMap"));
+    UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
+
+    //UShootGameInstance* ShootGameInstance = Cast<UShootGameInstance>(UGameplayStatics::GetGameInstance(this));
+    //if (ShootGameInstance)
+    //{
+    //    FString MapName = TEXT("/Game/FirstPerson/Maps/FirstPersonMap.FirstPersonMap");
+    //    UE_LOG(LogTemp, Warning, TEXT("Attempting to load level: %s"), *MapName);
+
+    //    ShootGameInstance->BeginLoadingScreen(TEXT("/Game/FirstPerson/Maps/FirstPersonMap.FirstPersonMap"));
+    //    UGameplayStatics::OpenLevel(this, *MapName);
+
+    //    /*ShootGameInstance->BeginLoadingScreen(TEXT("ThirdPersonMap"));*/
+    //}
+
+    if (LoadingWidgetClass) // LoadingWidgetClass 是 UUserWidget 的子类，需要事先设置
+    {
+        LoadingWidget = CreateWidget<UUserWidget>(GetWorld(), LoadingWidgetClass);
+        if (LoadingWidget)
+        {
+            LoadingWidget->AddToViewport(10);
+        }
+    }
+
+    FTimerHandle TimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ULoginUserWidget::LoadNextLevel, 3.0f, false);
+
 }
 
 void ULoginUserWidget::OnRegisterButtonClicked()
@@ -103,4 +130,9 @@ bool ULoginUserWidget::SaveToTextFile(FString FileName)
 bool ULoginUserWidget::LoadFromTextFile(FString FileName)
 {
 	return false;
+}
+
+void ULoginUserWidget::LoadNextLevel()
+{
+    UGameplayStatics::OpenLevel(this, TEXT("FirstPersonMap"));
 }

@@ -22,6 +22,12 @@ public:
 
 	UFUNCTION()
 	void OnRegisterButtonClicked();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> LoadingWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> LoadingWidget;
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -34,6 +40,9 @@ protected:
 	bool LoadFromTextFile(FString FileName);
 	
 private:
+
+	void LoadNextLevel();
+
 	UButton* LoginButton;
 	UButton* RegisterButton;
 
