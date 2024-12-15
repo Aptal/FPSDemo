@@ -10,6 +10,7 @@
 class UCanvasPanel;
 class UTextBlock;
 class UVerticalBox;
+class UImage;
 
 UCLASS()
 class SHOOTDEMO_API UShooterUserWidget : public UUserWidget
@@ -29,6 +30,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
 	void UpdateAmmoMax(const int32 AmmoMax);
+
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+	void UpdateCrosshair(const FLinearColor& NewColor = FLinearColor::White);
+
 
 	/** 更新玩家当前分数 */
 	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
@@ -59,6 +64,9 @@ protected:
 	/** 用于显示得分面板的容器 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UCanvasPanel* ScorePanel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* CrosshairsImg;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UTextBlock* TotalScoreText;

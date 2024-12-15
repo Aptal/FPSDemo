@@ -168,31 +168,6 @@ void AShootDemoGameMode::EndGame()
 	TObjectPtr<APlayerController> pc = GetWorld()->GetFirstPlayerController();
 	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(pc->GetCharacter());
 	Character->ShowScorePanel();
-
-	if (pc)
-	{
-		AShootPlayerState* PS = Cast<AShootPlayerState>(pc->PlayerState);
-		if (PS != nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Player %s Score: %d"), *pc->GetName(), PS->GetPlayerScore());
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("score : %d"), PS->GetPlayerScore()));
-		}
-	}
-
-	//for (FConstPlayerControllerIterator PlayerControllerIt = GetWorld()->GetPlayerControllerIterator(); PlayerControllerIt; ++PlayerControllerIt)
-	//{
-	//	TObjectPtr<APlayerController> PC = PlayerControllerIt->Get();
-	//	if (PC != nullptr) 
-	//	{
-	//		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PC->PlayerState))
-	//		{
-	//			UE_LOG(LogTemp, Log, TEXT("Player %s Score: %d"), *PC->GetName(), PS->GetPlayerScore());
-	//			TotalScore += PS->GetPlayerScore();
-	//		}
-	//	}
-	//}
-
-	UE_LOG(LogTemp, Log, TEXT("Total Score: %d"), TotalScore);
 }
 
 void AShootDemoGameMode::OnRep_Seconds()

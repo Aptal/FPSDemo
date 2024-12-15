@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Components/CanvasPanel.h"
+#include "Components/Image.h"
 
 UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializer)
 	: Super(objectInitializer)
@@ -14,6 +15,7 @@ UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializ
 	AmmoCurrentText = nullptr;
 	AmmoMaxText = nullptr;
 	TotalScoreText = nullptr;
+	CrosshairsImg = nullptr;
 }
 
 bool UShooterUserWidget::Initialize()
@@ -49,6 +51,8 @@ bool UShooterUserWidget::Initialize()
 	ScoreInfoBox = Cast<UVerticalBox>(GetWidgetFromName("ScoreInfoBox"));
 	TotalScoreText = Cast<UTextBlock>(GetWidgetFromName("TotalScoreText"));
 
+	CrosshairsImg = Cast<UImage>(GetWidgetFromName("CrosshairsImg"));
+
 	return true;
 }
 
@@ -79,6 +83,14 @@ void UShooterUserWidget::UpdateAmmoMax(const int32 AmmoMax)
 	if (AmmoMaxText)
 	{
 		AmmoMaxText->SetText(FText::FromString(FString::Printf(TEXT("%d"), AmmoMax)));
+	}
+}
+
+void UShooterUserWidget::UpdateCrosshair(const FLinearColor& NewColor)
+{
+	if (CrosshairsImg)
+	{
+		CrosshairsImg->SetColorAndOpacity(NewColor);
 	}
 }
 

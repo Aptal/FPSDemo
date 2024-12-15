@@ -7,6 +7,7 @@
 #include "BaseCube.generated.h"
 
 class UBoxComponent;
+class AShootDemoPlayerController;
 
 UCLASS()
 class SHOOTDEMO_API ABaseCube : public AActor
@@ -25,7 +26,7 @@ public:
 
 	void GetBuff(int importantBuff);
 
-	void OnHitByProjectile(AController* InstigatingController);
+	void OnHitByProjectile(AShootDemoPlayerController* InstigatingController);
 
 	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")
 	int Score = 2;

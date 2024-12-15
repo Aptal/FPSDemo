@@ -30,3 +30,26 @@ void AShootDemoPlayerController::InitHUDWidget()
 		GameInfoUI = GameInfoHUD->WidgetInstance;
 	}
 }
+
+void AShootDemoPlayerController::ChangeCrosshairColorTemporarily()
+{
+	if (GameInfoUI && IsLocalController())
+	{
+		GameInfoUI->UpdateCrosshair(FLinearColor::Red);
+
+		// 使用定时器在 1 秒后恢复颜色
+		FTimerHandle TimerHandle;
+		GetWorldTimerManager().SetTimer(TimerHandle, FTimerDelegate::CreateLambda([this]()
+			{
+				GameInfoUI->UpdateCrosshair(FLinearColor::Black); // 恢复为默认颜色
+			}), 1.0f, false);
+	}
+}
+
+void AShootDemoPlayerController::ClientChangeCrosshairColor_Implementation()
+{
+	if (IsLocalController())
+	{
+		ChangeCrosshairColorTemporarily();
+	}
+}

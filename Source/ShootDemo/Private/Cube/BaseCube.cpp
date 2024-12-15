@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Net/UnrealNetwork.h"
-
 #include "Cube/BaseCube.h"
 #include "Components/BoxComponent.h"
 #include "ShootPlayerState.h"
 #include "../ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ABaseCube::ABaseCube()
@@ -67,7 +66,7 @@ void ABaseCube::GetBuff(int importantBuff)
 
 
 
-void ABaseCube::OnHitByProjectile(AController* InstigatingController)
+void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* a)
 {
 	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
 

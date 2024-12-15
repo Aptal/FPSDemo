@@ -34,6 +34,14 @@ protected:
 	void InitHUDWidget();
 
 public:
+
+	UFUNCTION()
+	void ChangeCrosshairColorTemporarily();
+
+	UFUNCTION(Client, Reliable)
+	void ClientChangeCrosshairColor();
+
+
 	UPROPERTY()
 	TObjectPtr<AShooterHUD> GameInfoHUD;
 

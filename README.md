@@ -45,8 +45,10 @@
 ## 第四周
 - [x] 1.实现登录界面（需要输入用户名和密码，其中密码加密显示，有确认按钮）  
 [登陆页面展示](#LoginImg)
-- [x] 2.实现加载界面（要有动画表传达正在加载）
-- [x] 3.实现射击游戏操作面板（要有血条，子弹数，击中玩家会发生变化的准星
+- [x] 2.实现加载界面（要有动画表传达正在加载）  
+[加载页面展示](#LoadingImg)
+- [x] 3.实现射击游戏操作面板（要有血条，子弹数，击中玩家会发生变化的准星  
+[操作面板展示](#UIImg)
 
 ## 第五周
 - [ ] 1.实现敌人的基础移动动画蓝图，并尽可能优化表现。
@@ -78,6 +80,20 @@
 #### 登陆页面
 <a name="LoginImg"></a>
 ![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-1.png?raw=true)
+
+#### 加载页面
+登陆页面点击登录后，加载界面（强制delay 3s）右下角使用ue自带的转圈，中间的字体添加抖动动画，3s后自动进入游戏界面
+<a name="LoadingImg"></a>
+![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-2.png?raw=true)
+
+#### 操作面板
+持枪时初始10个子弹，击中玩家后准星会从黑色变红色
+<a name="UIImg"></a>
+![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-3.png?raw=true)
+
+
+### 12.16
+- 射击者的获取有点问题
 
 ### 12.15
 - 新建gameinstance会出现访问不到map（索引为空，打开level失败）的情况，暂时采用从ButtonClick中 清空widget->打开loading widget-> delay 3s->打开新level

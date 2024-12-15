@@ -4,6 +4,9 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Cube/BaseCube.h"
+#include "ShootDemoCharacter.h"
+#include "ShootDemoPlayerController.h"
+#include "Net/UnrealNetwork.h"
 
 AShootDemoProjectile::AShootDemoProjectile() 
 {
@@ -30,6 +33,9 @@ AShootDemoProjectile::AShootDemoProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	//  ÍøÂç¸´ÖÆ
+	bReplicates = true;
 }
 
 void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -38,7 +44,21 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	TObjectPtr<ABaseCube> cube = Cast<ABaseCube>(OtherActor);
 	if (cube != nullptr) 
 	{
-		cube->OnHitByProjectile(GetInstigatorController());
+		cube->OnHitByProjectile(Cast<AShootDemoPlayerController>(GetInstigatorController()));
+		Destroy();
+	}
+
+	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(OtherActor);
+	if (Character != nullptr)
+	{
+		TObjectPtr<AShootDemoPlayerController> PC = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("hit pc")));
+		if (PC)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("hit pc")));
+			PC->ClientChangeCrosshairColor();
+			//PC->ChangeCrosshairColorTemporarily();
+		}
 		Destroy();
 	}
 
@@ -47,9 +67,6 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-		
-		UE_LOG(LogTemp, Warning, TEXT("The Actor's name is %s"), *OtherActor->GetName());
-		
 		Destroy();
 	}
 }
