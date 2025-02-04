@@ -26,6 +26,8 @@ public:
 
 	void GetBuff(int importantBuff);
 
+	// 服务器上运行，可靠函数
+	//UFUNCTION(Server, Reliable)
 	void OnHitByProjectile(AShootDemoPlayerController* InstigatingController);
 
 	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")

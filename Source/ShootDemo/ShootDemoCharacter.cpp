@@ -134,3 +134,36 @@ void AShootDemoCharacter::HideScorePanel()
 		}
 	}
 }
+
+void AShootDemoCharacter::SpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+{
+	ServerSpwanProjectile(SpawnLocation, SpawnRotation);
+}
+
+void AShootDemoCharacter::ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire on Server")));
+
+	if (WeaponComponent != nullptr && WeaponComponent->ProjectileClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(GetController());
+
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+			// Spawn the projectile at the muzzle
+			World->SpawnActor<AShootDemoProjectile>(WeaponComponent->ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+		}
+	}
+}
+
+bool AShootDemoCharacter::ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+{
+	// ×Óµ¯ÓàÁ¿
+	return true; // AmmoCurrent > 0;
+}

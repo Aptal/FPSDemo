@@ -23,6 +23,8 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 
 	AmmoMax = 10;
 	AmmoCurrent = AmmoMax;
+
+	SetIsReplicated(true);
 }
 
 
@@ -42,28 +44,31 @@ void UTP_WeaponComponent::Fire()
 
 		return;
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire 0")));
+
+	// 获取生成参数
+	AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(Character->GetController());
+	if (!PC) return;
+
+	const FRotator SpawnRotation = PC->PlayerCameraManager->GetCameraRotation();
+	const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
 
 	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
-	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(MuzzleOffset);
-	
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-	
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<AShootDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+	//if (Character->GetLocalRole() < ROLE_Authority)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire ----")));
 
-			AmmoCurrent--;
-			UpdateAmmoText(PlayerController);
-		}
+	//	ServerFire(SpawnLocation, SpawnRotation);
+	//}
+	//else
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire +++++")));
+
+	//	ServerFire(SpawnLocation, SpawnRotation);
+	//}
+	if (Character != nullptr)
+	{
+		Character->SpwanProjectile(SpawnLocation, SpawnRotation);
 	}
 	
 	// Try and play the sound if specified
@@ -83,6 +88,62 @@ void UTP_WeaponComponent::Fire()
 		}
 	}
 }
+
+//void UTP_WeaponComponent::ActualFire(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+//{
+//	if (ProjectileClass != nullptr)
+//	{
+//		UWorld* const World = GetWorld();
+//		if (World != nullptr)
+//		{
+//			AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController());
+//
+//			//Set Spawn Collision Handling Override
+//			FActorSpawnParameters ActorSpawnParams;
+//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+//
+//			// Spawn the projectile at the muzzle
+//			World->SpawnActor<AShootDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+//
+//			AmmoCurrent--;
+//			UpdateAmmoText(PlayerController);
+//		}
+//	}
+//}
+
+//void UTP_WeaponComponent::ServerFire_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+//{
+//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire on Server")));
+//
+//	ActualFire(SpawnLocation, SpawnRotation);
+//}
+//
+//bool UTP_WeaponComponent::ServerFire_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+//{
+//	// 子弹余量
+//	return true; // AmmoCurrent > 0;
+//}
+
+//// 启用属性复制
+//void UTP_WeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//	DOREPLIFETIME(UTP_WeaponComponent, AmmoCurrent);
+//}
+//
+//void UTP_WeaponComponent::OnRep_AmmoChanged()
+//{
+//	MulticastUpdateAmmo();
+//}
+//
+//void UTP_WeaponComponent::MulticastUpdateAmmo_Implementation()
+//{
+//	if (AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(Character->GetController()))
+//	{
+//		PC->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
+//		PC->GameInfoUI->UpdateAmmoMax(AmmoMax);
+//	}
+//}
 
 void UTP_WeaponComponent::Reload()
 {
@@ -110,7 +171,7 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
-
+	Character->WeaponComponent = this;
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
 

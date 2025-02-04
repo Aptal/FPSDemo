@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "TP_WeaponComponent.h"
 #include "ShootDemoCharacter.generated.h"
 
 class UInputComponent;
@@ -13,6 +14,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
+class UTP_WeaponComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -63,6 +65,15 @@ public:
 	void ShowScorePanel();
 	void HideScorePanel();
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void SpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
+	// 服务器 RPC 函数，用于在服务器上生成子弹
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerSpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	virtual bool ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	virtual void ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -73,6 +84,8 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
+	// 持有武器组件的指针
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UTP_WeaponComponent* WeaponComponent;
 };
 

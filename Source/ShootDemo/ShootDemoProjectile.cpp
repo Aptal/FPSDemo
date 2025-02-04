@@ -36,6 +36,8 @@ AShootDemoProjectile::AShootDemoProjectile()
 
 	//  网络复制
 	bReplicates = true;
+	SetReplicateMovement(true);
+	ProjectileMovement->SetIsReplicated(true);
 }
 
 void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -69,4 +71,13 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 		Destroy();
 	}
+}
+
+void AShootDemoProjectile::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// 指定要复制的属性
+	DOREPLIFETIME(AShootDemoProjectile, CollisionComp);
+	DOREPLIFETIME(AShootDemoProjectile, ProjectileMovement);
 }
