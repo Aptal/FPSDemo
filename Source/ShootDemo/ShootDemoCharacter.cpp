@@ -13,7 +13,7 @@
 #include "ShootPlayerState.h"
 #include "ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
-#include "ShootDemoGameMode.h"
+#include "ShootGameState.h"
 #include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -110,15 +110,15 @@ void AShootDemoCharacter::ShowScorePanel()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("press")));
 
-	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
-	if (PlayerController)
-	{
-		if (PlayerController->GameInfoUI)
-		{
-			TObjectPtr<AShootDemoGameMode> GameMode = Cast<AShootDemoGameMode>(GetWorld()->GetAuthGameMode());
-			PlayerController->GameInfoUI->ShowScorePanel(GameMode->GetScoreList());
-		}
-	}
+	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
+	//if (PlayerController && GetWorld() != nullptr)
+	//{
+	//	if (PlayerController->GameInfoUI)
+	//	{
+	//		TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetAuthGameMode());
+	//		PlayerController->GameInfoUI->ShowScorePanel(GS->GetScoreList());
+	//	}
+	//}
 }
 
 void AShootDemoCharacter::HideScorePanel()
@@ -137,13 +137,11 @@ void AShootDemoCharacter::HideScorePanel()
 
 void AShootDemoCharacter::SpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation)
 {
-	ServerSpwanProjectile(SpawnLocation, SpawnRotation);
+	ServerSpwanProjectile(SpawnLocation, SpawnRotation, this);
 }
 
-void AShootDemoCharacter::ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+void AShootDemoCharacter::ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("fire on Server")));
-
 	if (WeaponComponent != nullptr && WeaponComponent->ProjectileClass != nullptr)
 	{
 		UWorld* const World = GetWorld();
@@ -156,14 +154,40 @@ void AShootDemoCharacter::ServerSpwanProjectile_Implementation(const FVector& Sp
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<AShootDemoProjectile>(WeaponComponent->ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			AShootDemoProjectile* Projectile = World->SpawnActor<AShootDemoProjectile>(WeaponComponent->ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (Projectile)
+			{
+				WeaponComponent->AmmoCurrent--;
+				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("cnt: %d"), WeaponComponent->AmmoCurrent));
 
+				Projectile->SetInstigator(this);
+				MulticastFireAnmi();
+			}
 		}
 	}
 }
 
-bool AShootDemoCharacter::ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation)
+void AShootDemoCharacter::MulticastFireAnmi_Implementation()
 {
-	// ×Óµ¯ÓàÁ¿
-	return true; // AmmoCurrent > 0;
+	// Try and play the sound if specified
+	if (WeaponComponent->FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, WeaponComponent->FireSound, GetActorLocation());
+	}
+
+	// Try and play a firing animation if specified
+	if (WeaponComponent->FireAnimation != nullptr)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+		if (AnimInstance != nullptr)
+		{
+			AnimInstance->Montage_Play(WeaponComponent->FireAnimation, 1.f);
+		}
+	}
+}
+
+bool AShootDemoCharacter::ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter)
+{
+	return WeaponComponent->AmmoCurrent > 0;
 }

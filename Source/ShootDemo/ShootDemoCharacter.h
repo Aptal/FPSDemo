@@ -70,9 +70,13 @@ public:
 
 	// 服务器 RPC 函数，用于在服务器上生成子弹
 	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerSpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	virtual bool ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	virtual void ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation);
+	void ServerSpwanProjectile(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter);
+	virtual bool ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter);
+	virtual void ServerSpwanProjectile_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastFireAnmi();
+	virtual void MulticastFireAnmi_Implementation();
 
 protected:
 	// APawn interface

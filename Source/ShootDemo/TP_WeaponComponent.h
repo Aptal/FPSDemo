@@ -52,14 +52,7 @@ public:
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
-	/*
-	void ActualFire(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void ServerFire(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	virtual bool ServerFire_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	virtual void ServerFire_Implementation(const FVector& SpawnLocation, const FRotator& SpawnRotation);
-	*/
+	
 	// 换弹
 	void Reload();
 
@@ -76,19 +69,19 @@ private:
 
 public:
 	
-	//UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
+	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
 	int AmmoCurrent = 0;
 
 	// 复制通知函数
-	//UFUNCTION()
-	//void OnRep_AmmoChanged();
+	UFUNCTION()
+	void OnRep_AmmoChanged();
 
-	//// 多播更新UI
-	//UFUNCTION(NetMulticast, Reliable)
-	//void MulticastUpdateAmmo();
+	// 多播更新UI
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastUpdateAmmo();
 
 	UPROPERTY(EditAnyWhere)
 	int AmmoMax;
 
-	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
 };

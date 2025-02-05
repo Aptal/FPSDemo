@@ -14,13 +14,11 @@ AShootPlayerState::AShootPlayerState()
 void AShootPlayerState::AddScore(int32 ScoreAmount)
 {
 	PlayerScore = PlayerScore + ScoreAmount;
-
-	//OnRep_Score();
 }
 
 void AShootPlayerState::OnRep_ShootScore()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player's score updated: %d"), PlayerScore);
+	//UE_LOG(LogTemp, Warning, TEXT("Player's score updated: %d"), PlayerScore);
 }
 
 void AShootPlayerState::BeginPlay()

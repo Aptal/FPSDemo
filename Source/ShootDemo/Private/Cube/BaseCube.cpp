@@ -19,7 +19,7 @@ ABaseCube::ABaseCube()
 
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube static mesh"));
 	CubeMesh->SetupAttachment(RootComponent);
-
+	CubeMesh->SetIsReplicated(true);
 	bReplicates = true;
 
 }
@@ -29,10 +29,6 @@ void ABaseCube::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//if (HasAuthority())
-	//{
-	//	Score = 500;
-	//}
 }
 
 void ABaseCube::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -48,14 +44,6 @@ void ABaseCube::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 void ABaseCube::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//if (HasAuthority())
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Server Score : %d"), Score);
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Client Score : %d"), Score);
-	//}
 }
 
 void ABaseCube::GetBuff(int importantBuff)
@@ -66,13 +54,13 @@ void ABaseCube::GetBuff(int importantBuff)
 
 
 
-void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* a)
+void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* PlayerController)
 {
 	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
 
-	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
+	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if(PlayerController)
+	if(PlayerController && PlayerController->PlayerState)
 	{
 		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
 		{

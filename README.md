@@ -18,6 +18,24 @@
 ## 第五周
 [《UE5的骨骼动画》](https://www.mubu.com/doc/AejDxU9ZfB)
 
+## 第六周
+《游戏物理》-推迟
+
+## 第七章
+《渲染基础》
+
+## 第八周
+[《AI技术介绍》](https://www.mubu.com/doc/CitINrN8h5)
+
+## 第九周
+[《UE网络同步》](https://www.mubu.com/doc/2fmoMnj_gh5)
+
+## 第十周
+[《FP5游戏开发基础》](https://www.mubu.com/doc/6KbxBUSRxx5)
+
+## 第十一周
+[《游戏物理》](https://www.mubu.com/doc/4mk3chNqAx5)
+
 # 作业完成情况
 ## 第一周
 - [x] 源码编译UE5，创建C++工程（First Person模板）  
@@ -39,7 +57,7 @@
 ### 附加题
 - [x] 1. 利用UMG制作结算UI替代日志打印  
 [结算面板展示](#ScorePanelImg)
-- [ ] 2. 支持多人联机
+- [-] 2. 支持多人联机
 
 
 ## 第四周
@@ -114,6 +132,10 @@
 <a name="UIImg"></a>
 ![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-3.png?raw=true)
 
+
+### 02.06
+ - 开火动画同步，倒计时正确同步，射击者（子弹拥有者）完善
+ - todo：子弹余量UI同步，结算面板，
 
 ### 02.05
 - 将Fire时的Projectile生成从Weapon_Component中移到Character，终于是能正确同步在服务端跟客户端了，还需要完善数量变化的同步
