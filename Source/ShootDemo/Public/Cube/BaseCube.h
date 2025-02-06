@@ -27,8 +27,10 @@ public:
 	void GetBuff(int importantBuff);
 
 	// 服务器上运行，可靠函数
-	//UFUNCTION(Server, Reliable)
-	void OnHitByProjectile(AShootDemoPlayerController* InstigatingController);
+	UFUNCTION(Server, Reliable, WithValidation)
+	void OnHitByProjectile(AShootDemoPlayerController* PlayerController);
+	virtual bool OnHitByProjectile_Validate(AShootDemoPlayerController* PlayerController);
+	virtual void OnHitByProjectile_Implementation(AShootDemoPlayerController* PlayerController);
 
 	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")
 	int Score = 2;

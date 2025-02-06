@@ -50,14 +50,14 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 		Destroy();
 	}
 
+	// »÷ÖÐ Íæ¼Ò/µÐÈË
 	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(OtherActor);
 	if (Character != nullptr)
 	{
-		TObjectPtr<AShootDemoPlayerController> PC = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("hit pc")));
+		TObjectPtr<AShootDemoPlayerController> PC = Cast<AShootDemoPlayerController>(GetInstigatorController());
 		if (PC)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("hit pc")));
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("hit pc")));
 			PC->ClientChangeCrosshairColor();
 			//PC->ChangeCrosshairColorTemporarily();
 		}

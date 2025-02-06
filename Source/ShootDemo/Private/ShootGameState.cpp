@@ -94,15 +94,18 @@ void AShootGameState::InitScoreCube()
 TArray<int32>& AShootGameState::GetScoreList() const
 {
 	// TODO: insert return statement here
-	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	if (GetWorld())
 	{
-		TObjectPtr<APlayerController> PlayerController = It->Get();
-		if (PlayerController)
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 		{
-			TObjectPtr<AShootPlayerState> PlayerState = Cast<AShootPlayerState>(PlayerController->PlayerState);
-			if (PlayerState)
+			TObjectPtr<APlayerController> PlayerController = It->Get();
+			if (PlayerController)
 			{
-				PlayerScores.Add(PlayerState->GetPlayerScore());  // 假设 PlayerState 有一个 GetScore() 方法
+				TObjectPtr<AShootPlayerState> PlayerState = Cast<AShootPlayerState>(PlayerController->PlayerState);
+				if (PlayerState)
+				{
+					PlayerScores.Add(PlayerState->GetPlayerScore());  // 假设 PlayerState 有一个 GetScore() 方法
+				}
 			}
 		}
 	}

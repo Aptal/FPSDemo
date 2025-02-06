@@ -30,9 +30,11 @@ protected:
 	float Health = 200.0f;
 
 public:
-	/** 增加分数（服务器端调用） */
-	//UFUNCTION(Server, Reliable, WithValidation)
-	void AddScore(int32 ScoreAmount);
+	/** 增加分数（客户端调用，服务器执行） */
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerAddScore(int32 ScoreAmount);
+	void ServerAddScore_Implementation(int32 ScoreAmount);
+	bool ServerAddScore_Validate(int32 ScoreAmount);
 
 	/** 分数更新回调 */
 	UFUNCTION()

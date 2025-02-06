@@ -61,6 +61,17 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/* 主武器子弹同步start */
+	// 复制通知函数
+	UFUNCTION()
+	void OnRep_AmmoChanged();
+	// 多播更新UI
+	//UFUNCTION(NetMulticast, Reliable)
+	//void MulticastUpdateAmmo();
+	/* 主武器子弹同步end */
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 public:
 	void ShowScorePanel();
 	void HideScorePanel();
@@ -88,8 +99,12 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
 	// 持有武器组件的指针
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	UTP_WeaponComponent* WeaponComponent;
+
+	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
+	int AmmoCurrent = 0;
 };
 

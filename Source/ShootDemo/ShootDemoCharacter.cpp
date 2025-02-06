@@ -15,6 +15,7 @@
 #include "UMG/ShooterUserWidget.h"
 #include "ShootGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -110,15 +111,15 @@ void AShootDemoCharacter::ShowScorePanel()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("press")));
 
-	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
-	//if (PlayerController && GetWorld() != nullptr)
-	//{
-	//	if (PlayerController->GameInfoUI)
-	//	{
-	//		TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetAuthGameMode());
-	//		PlayerController->GameInfoUI->ShowScorePanel(GS->GetScoreList());
-	//	}
-	//}
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
+	if (PlayerController && GetWorld() != nullptr)
+	{
+		if (PlayerController->GameInfoUI)
+		{
+			TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetGameState());
+			PlayerController->GameInfoUI->ShowScorePanel(GS->GetScoreList());
+		}
+	}
 }
 
 void AShootDemoCharacter::HideScorePanel()
@@ -131,6 +132,28 @@ void AShootDemoCharacter::HideScorePanel()
 		if (PlayerController->GameInfoUI)
 		{
 			PlayerController->GameInfoUI->HideScorePanel();
+		}
+	}
+}
+
+void AShootDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AShootDemoCharacter, AmmoCurrent);
+}
+
+void AShootDemoCharacter::OnRep_AmmoChanged()
+{
+	if (WeaponComponent != nullptr)
+	{
+		if (AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(GetController()))
+		{
+			if (PC->GameInfoUI)
+			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, PC->GetName());
+				PC->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
+				PC->GameInfoUI->UpdateAmmoMax(WeaponComponent->AmmoMax);
+			}
 		}
 	}
 }
@@ -157,9 +180,17 @@ void AShootDemoCharacter::ServerSpwanProjectile_Implementation(const FVector& Sp
 			AShootDemoProjectile* Projectile = World->SpawnActor<AShootDemoProjectile>(WeaponComponent->ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 			if (Projectile)
 			{
-				WeaponComponent->AmmoCurrent--;
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("cnt: %d"), WeaponComponent->AmmoCurrent));
+				AmmoCurrent--;
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, PlayerController->GetName());
 
+				if (HasAuthority())
+				{
+					// 区分客户端、服务端更新UI
+					if (PlayerController->IsLocalController())
+					{
+						OnRep_AmmoChanged();
+					}
+				}
 				Projectile->SetInstigator(this);
 				MulticastFireAnmi();
 			}
@@ -189,5 +220,5 @@ void AShootDemoCharacter::MulticastFireAnmi_Implementation()
 
 bool AShootDemoCharacter::ServerSpwanProjectile_Validate(const FVector& SpawnLocation, const FRotator& SpawnRotation, const AShootDemoCharacter* SourceCharacter)
 {
-	return WeaponComponent->AmmoCurrent > 0;
+	return AmmoCurrent > 0;
 }

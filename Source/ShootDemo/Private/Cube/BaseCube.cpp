@@ -54,27 +54,64 @@ void ABaseCube::GetBuff(int importantBuff)
 
 
 
-void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* PlayerController)
+//void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* PlayerController)
+//{
+//	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
+//
+//	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
+//
+//	if(PlayerController && PlayerController->PlayerState)
+//	{
+//		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
+//		{
+//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, PlayerController->GetName());
+//			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("score %d  --- %d"), Score, PS->GetPlayerScore()));
+//
+//			PS->ServerAddScore(Score);
+//
+//			/*if (PlayerController->GameInfoUI)
+//			{
+//				PlayerController->GameInfoUI->UpdatePlayerScore(PS->GetPlayerScore());
+//			}*/
+//		}
+//	}
+//
+//
+//	if (HitCount == 1) 
+//	{
+//		CubeMesh->SetWorldScale3D(GetActorScale3D() * HitScale);
+//	}
+//	if (HitCount == 2)
+//	{
+//		Destroy();
+//	}
+//
+//}
+
+bool ABaseCube::OnHitByProjectile_Validate(AShootDemoPlayerController* PlayerController)
+{
+	return HitCount < 2;
+}
+
+void ABaseCube::OnHitByProjectile_Implementation(AShootDemoPlayerController* PlayerController)
 {
 	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
 
 	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
 
-	if(PlayerController && PlayerController->PlayerState)
+	if (PlayerController && PlayerController->PlayerState)
 	{
 		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
 		{
-			PS->AddScore(Score);
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, PlayerController->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("score %d  --- %d"), Score, PS->GetPlayerScore()));
 
-			if (PlayerController->GameInfoUI)
-			{
-				PlayerController->GameInfoUI->UpdatePlayerScore(PS->GetPlayerScore());
-			}
+			PS->ServerAddScore(Score);
 		}
 	}
 
 
-	if (HitCount == 1) 
+	if (HitCount == 1)
 	{
 		CubeMesh->SetWorldScale3D(GetActorScale3D() * HitScale);
 	}
@@ -82,6 +119,5 @@ void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* PlayerController)
 	{
 		Destroy();
 	}
-
 }
 

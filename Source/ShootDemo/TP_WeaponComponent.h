@@ -69,19 +69,17 @@ private:
 
 public:
 	
-	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
-	int AmmoCurrent = 0;
+	//UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
+	//int AmmoCurrent = 0;
 
-	// 复制通知函数
-	UFUNCTION()
-	void OnRep_AmmoChanged();
+	//// 复制通知函数
+	//UFUNCTION()
+	//void OnRep_AmmoChanged();
 
-	// 多播更新UI
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastUpdateAmmo();
+	//// 多播更新UI
+	//UFUNCTION(NetMulticast, Reliable)
+	//void MulticastUpdateAmmo();
 
 	UPROPERTY(EditAnyWhere)
 	int AmmoMax;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override; 
 };

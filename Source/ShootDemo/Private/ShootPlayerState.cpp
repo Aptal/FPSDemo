@@ -3,6 +3,8 @@
 
 #include "ShootPlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "../ShootDemoPlayerController.h"
+#include "UMG/ShooterUserWidget.h"
 
 AShootPlayerState::AShootPlayerState()
 {
@@ -11,14 +13,30 @@ AShootPlayerState::AShootPlayerState()
 	bReplicates = true;
 }
 
-void AShootPlayerState::AddScore(int32 ScoreAmount)
+void AShootPlayerState::ServerAddScore_Implementation(int32 ScoreAmount)
 {
-	PlayerScore = PlayerScore + ScoreAmount;
+	PlayerScore += ScoreAmount;
+	if (HasAuthority() && GetPlayerController()->IsLocalController())
+	{
+		OnRep_ShootScore();
+	}
+}
+bool AShootPlayerState::ServerAddScore_Validate(int32 ScoreAmount)
+{
+	return ScoreAmount >= 0;
 }
 
 void AShootPlayerState::OnRep_ShootScore()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Player's score updated: %d"), PlayerScore);
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetPlayerController());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Player's score updated: %d"), PlayerScore));
+
+	if (PlayerController && PlayerController->GameInfoUI)
+	{
+
+		PlayerController->GameInfoUI->UpdatePlayerScore(PlayerScore);
+	}
 }
 
 void AShootPlayerState::BeginPlay()

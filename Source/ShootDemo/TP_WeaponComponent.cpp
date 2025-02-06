@@ -14,7 +14,6 @@
 #include "Engine/World.h"
 #include "ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
-#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -23,8 +22,6 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 
 	AmmoMax = 10;
-	AmmoCurrent = AmmoMax;
-
 	//SetIsReplicated(true);
 }
 
@@ -36,7 +33,7 @@ void UTP_WeaponComponent::Fire()
 		return;
 	}
 
-	if (AmmoCurrent == 0)
+	if (Character->AmmoCurrent == 0)
 	{
 		if (EmptySound != nullptr)
 		{
@@ -45,7 +42,6 @@ void UTP_WeaponComponent::Fire()
 
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("rpc: %d"), GetIsReplicated()));
 
 	// 获取生成参数
 	AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(Character->GetController());
@@ -62,39 +58,18 @@ void UTP_WeaponComponent::Fire()
 
 }
 
-// 启用属性复制
-void UTP_WeaponComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UTP_WeaponComponent, AmmoCurrent);
-}
-
-void UTP_WeaponComponent::OnRep_AmmoChanged()
-{
-	MulticastUpdateAmmo();
-}
-
-void UTP_WeaponComponent::MulticastUpdateAmmo_Implementation()
-{
-	if (AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(Character->GetController()))
-	{
-		PC->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
-		PC->GameInfoUI->UpdateAmmoMax(AmmoMax);
-	}
-}
-
 void UTP_WeaponComponent::Reload()
 {
 }
 
-void UTP_WeaponComponent::UpdateAmmoText(AShootDemoPlayerController* PlayerController)
-{
-	if (PlayerController && PlayerController->GameInfoUI)
-	{
-		PlayerController->GameInfoUI->UpdateAmmoMax(AmmoMax);
-		PlayerController->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
-	}
-}
+//void UTP_WeaponComponent::UpdateAmmoText(AShootDemoPlayerController* PlayerController)
+//{
+//	if (PlayerController && PlayerController->GameInfoUI)
+//	{
+//		PlayerController->GameInfoUI->UpdateAmmoMax(AmmoMax);
+//		PlayerController->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
+//	}
+//}
 
 bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 {
@@ -114,7 +89,8 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 	Character->WeaponComponent = this;
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
-	
+	Character->AmmoCurrent = AmmoMax;
+
 	// Set up action bindings
 	if (AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController()))
 	{
@@ -130,7 +106,7 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 		}
 
-		UpdateAmmoText(PlayerController);
+		/*UpdateAmmoText(PlayerController);*/
 	}
 
 	return true;

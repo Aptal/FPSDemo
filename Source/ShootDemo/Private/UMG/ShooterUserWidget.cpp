@@ -72,7 +72,7 @@ void UShooterUserWidget::UpdateCountdown(const int32 RemainingTime)
 
 void UShooterUserWidget::UpdateAmmoCurrent(const int32 AmmoCurrent)
 {
-	if (AmmoCurrentText)
+	if (AmmoCurrentText != nullptr)
 	{
 		AmmoCurrentText->SetText(FText::FromString(FString::Printf(TEXT("%d"), AmmoCurrent)));
 	}
@@ -80,7 +80,7 @@ void UShooterUserWidget::UpdateAmmoCurrent(const int32 AmmoCurrent)
 
 void UShooterUserWidget::UpdateAmmoMax(const int32 AmmoMax)
 {
-	if (AmmoMaxText)
+	if (AmmoMaxText != nullptr)
 	{
 		AmmoMaxText->SetText(FText::FromString(FString::Printf(TEXT("%d"), AmmoMax)));
 	}
