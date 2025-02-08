@@ -132,6 +132,10 @@
 <a name="UIImg"></a>
 ![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-3.png?raw=true)
 
+### 02.09
+- 添加敌人AI，当视野范围内有玩家或者被玩家射到会追踪玩家，距离玩家一定距离内触发攻击动画
+- 玩家射击敌人会造成20点伤害，敌人总共100点血量
+- [ ] todo：敌人血条，敌人攻击玩家伤害值
 
 ### 02.06
  - 开火动画同步，倒计时正确同步，射击者（子弹拥有者）完善

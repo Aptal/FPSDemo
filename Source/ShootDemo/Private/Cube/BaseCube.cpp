@@ -53,7 +53,6 @@ void ABaseCube::GetBuff(int importantBuff)
 }
 
 
-
 //void ABaseCube::OnHitByProjectile(AShootDemoPlayerController* PlayerController)
 //{
 //	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
@@ -96,9 +95,6 @@ bool ABaseCube::OnHitByProjectile_Validate(AShootDemoPlayerController* PlayerCon
 void ABaseCube::OnHitByProjectile_Implementation(AShootDemoPlayerController* PlayerController)
 {
 	HitCount = FMath::Clamp(HitCount + 1, 0, 2);
-
-	//TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetWorld()->GetFirstPlayerController());
-
 	if (PlayerController && PlayerController->PlayerState)
 	{
 		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
@@ -109,7 +105,6 @@ void ABaseCube::OnHitByProjectile_Implementation(AShootDemoPlayerController* Pla
 			PS->ServerAddScore(Score);
 		}
 	}
-
 
 	if (HitCount == 1)
 	{

@@ -6,6 +6,7 @@
 #include "Cube/BaseCube.h"
 #include "ShootDemoCharacter.h"
 #include "ShootDemoPlayerController.h"
+#include "Enemy/EnemyBase.h"
 #include "Net/UnrealNetwork.h"
 
 AShootDemoProjectile::AShootDemoProjectile() 
@@ -44,24 +45,43 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 {
 	// 判断是否击中得分方块
 	TObjectPtr<ABaseCube> cube = Cast<ABaseCube>(OtherActor);
+	TObjectPtr<AShootDemoPlayerController> ShooterController = Cast<AShootDemoPlayerController>(GetInstigatorController());
+
 	if (cube != nullptr) 
 	{
-		cube->OnHitByProjectile(Cast<AShootDemoPlayerController>(GetInstigatorController()));
+		cube->OnHitByProjectile(ShooterController);
 		Destroy();
+		return;
 	}
 
 	// 击中 玩家/敌人
-	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(OtherActor);
-	if (Character != nullptr)
+	TObjectPtr<AShootDemoCharacter> Player = Cast<AShootDemoCharacter>(OtherActor);
+	if (Player != nullptr)
 	{
-		TObjectPtr<AShootDemoPlayerController> PC = Cast<AShootDemoPlayerController>(GetInstigatorController());
-		if (PC)
+		if (ShooterController)
 		{
 			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, FString::Printf(TEXT("hit pc")));
-			PC->ClientChangeCrosshairColor();
+			ShooterController->ClientChangeCrosshairColor();
 			//PC->ChangeCrosshairColorTemporarily();
 		}
 		Destroy();
+		return;
+	}
+
+	TObjectPtr<AEnemyBase> Enemy = Cast<AEnemyBase>(OtherActor);
+	if (Enemy != nullptr)
+	{
+		if (ShooterController)
+		{
+			Enemy->BPEnemyAttached(20.0f, Cast<AShootDemoCharacter>(ShooterController->GetCharacter()));
+		}
+		else
+		{
+			Enemy->BPEnemyAttached(20.0f, nullptr);
+		}
+		//Enemy->EnemyAttached(20.0f);
+		Destroy();
+		return;
 	}
 
 	// Only add impulse and destroy projectile if we hit a physics
@@ -70,6 +90,7 @@ void AShootDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 		Destroy();
+		return;
 	}
 }
 
