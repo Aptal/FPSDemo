@@ -75,8 +75,10 @@
 [操作面板展示](#UIImg)
 
 ## 第五周
-- [x] 1.实现敌人的基础移动动画蓝图，并尽可能优化表现。
-- [x] 2.实现敌人的死亡动画，并尽可能优化表现（如添加多方向死亡动画等）。
+- [x] 1.实现敌人的基础移动动画蓝图，并尽可能优化表现。  
+[动画蓝图设置与展示](#动画蓝图设置与展示)
+- [x] 2.实现敌人的死亡动画，并尽可能优化表现（如添加多方向死亡动画等）。  
+[敌人死亡动画展示](#敌人死亡动画展示)
 - [ ] 3.实现近战击败敌人的功能和动画表现。（选做）
 
 ## 第六周
@@ -90,9 +92,9 @@
 - [ ] 3.实现NPC遇到玩家以后主动和玩家进行打招呼。
 
 ## 第八周
-- [ ] 1. 开启CS网络同步模式，开启角色和投掷物移动同步
-- [ ] 2. 实现客户端发起开火，服务器创建投掷物并广播。
-- [ ] 3. 服务器实现投掷物命中伤害逻辑，并广播命中事件和角色血量变化
+- [x] 1. 开启CS网络同步模式，开启角色和投掷物移动同步
+- [x] 2. 实现客户端发起开火，服务器创建投掷物并广播。
+- [x] 3. 服务器实现投掷物命中伤害逻辑，并广播命中事件和角色血量变化
 
 ## 第十周
 ### 鱼群效果 Flocking
@@ -106,7 +108,7 @@
 # 完成情况说明
 
 ## 截图展示
-
+### 作业2
 #### 积分、缩放设置面板
 <a name="CubeInfo"></a>
 ![积分、缩放设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-1.png?raw=true "积分、缩放设置面板")
@@ -118,30 +120,63 @@
 #### 击中大小、重要目标对比
 “重要目标”被标记为黄金色，击中一次缩小一倍，两次消失
 <a name="HitShowImg"></a>
-![击中大小对比](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-3.png?raw=true)
+![击中大小对比](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/2Homework/2-3.png?raw=true)
 
+### 作业4
 #### 结算面板（每个玩家分数，总分数）
 <a name="ScorePanelImg"></a>
-![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-4.png?raw=true)
+![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/2Homework/2-4.png?raw=true)
 
 #### 登陆页面
 <a name="LoginImg"></a>
-![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-1.png?raw=true)
+![登陆页面](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-1.png?raw=true)
 
 #### 加载页面
 登陆页面点击登录后，加载界面（强制delay 3s）右下角使用ue自带的转圈，中间的字体添加抖动动画，3s后自动进入游戏界面
 <a name="LoadingImg"></a>
-![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-2.png?raw=true)
+![加载页面](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-2.png?raw=true)
 
 #### 操作面板
 持枪时初始10个子弹，击中玩家后准星会从黑色变红色
 <a name="UIImg"></a>
-![结算面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-3.png?raw=true)
+![操作面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/4Homework/4-3.png?raw=true)
+
+### 作业5
+#### 动画蓝图设置与展示
+调用攻击蒙太奇中的CallDamage通知
+<a name="UIImg"></a>
+![动画蓝图事件图表](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-1.png?raw=true)  
+
+敌人AI行为树设置：未死亡且无寻找目标时，随机位置移动，有攻击目标后（玩家射击命中 与 感知组件观察到玩家 会设置攻击目标）跑向玩家
+<a name="UIImg"></a>
+![敌人AI行为树](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-1-1.png?raw=true)
+
+随机位置移动展示（速度为200，行走动画）
+<a name="UIImg"></a>
+![动画蓝图事件图表](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-1-2.png?raw=true)
+
+追击玩家移动展示（速度为400，跑步动画）
+<a name="UIImg"></a>
+![动画蓝图事件图表](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-1-3.png?raw=true)
+
+攻击玩家动画展示（到达攻击目标范围内，攻击动画）
+<a name="UIImg"></a>
+![动画蓝图事件图表](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-1-4.png?raw=true)
+
+
+#### 敌人死亡动画展示
+敌人AI死亡动画展示（被玩家命中5次(敌人AI血量100，子弹伤害50)，死亡动画）  
+在服务器端的玩家左下角的血条是被敌人攻击后的（暂定血量200，敌人攻击伤害值50）  
+敌人AI被击杀后，血条UI销毁
+<a name="UIImg"></a>
+![死亡动画1](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2.png?raw=true)
+![死亡动画2](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2-1.png?raw=true)
+
 
 ### 02.09
 - 添加敌人AI，当视野范围内有玩家或者被玩家射到会追踪玩家，距离玩家一定距离内触发攻击动画
 - 玩家射击敌人会造成20点伤害，敌人总共100点血量
-- [ ] todo：敌人血条，敌人攻击玩家伤害值
+- [x] todo：敌人血条，敌人攻击玩家伤害值
 
 ### 02.06
  - 开火动画同步，倒计时正确同步，射击者（子弹拥有者）完善
