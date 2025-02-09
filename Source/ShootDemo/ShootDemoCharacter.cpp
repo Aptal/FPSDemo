@@ -42,6 +42,7 @@ AShootDemoCharacter::AShootDemoCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	AmmoCurrent = 0;
 	bReplicates = true;
 }
 
@@ -144,13 +145,16 @@ void AShootDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 void AShootDemoCharacter::OnRep_AmmoChanged()
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("ammo changed %d"), AmmoCurrent));
+
 	if (WeaponComponent != nullptr)
 	{
 		if (AShootDemoPlayerController* PC = Cast<AShootDemoPlayerController>(GetController()))
 		{
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, PC->GetName());
 			if (PC->GameInfoUI)
 			{
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, PC->GetName());
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("ammo update %d"), AmmoCurrent));
 				PC->GameInfoUI->UpdateAmmoCurrent(AmmoCurrent);
 				PC->GameInfoUI->UpdateAmmoMax(WeaponComponent->AmmoMax);
 			}

@@ -11,6 +11,7 @@ class UCanvasPanel;
 class UTextBlock;
 class UVerticalBox;
 class UImage;
+class UProgressBar;
 
 UCLASS()
 class SHOOTDEMO_API UShooterUserWidget : public UUserWidget
@@ -24,6 +25,9 @@ public:
 	/** 更新倒计时 */
 	UFUNCTION(BlueprintCallable, Category = "HUD")
 	void UpdateCountdown(const int32 RemainingTime);
+
+	UFUNCTION(BlueprintCallable, Category = "HUD")
+	void UpdateHPBar(const float HP);
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
 	void UpdateAmmoCurrent(const int32 AmmoCurrent);
@@ -56,6 +60,9 @@ protected:
 	/** 用于显示倒计时的文本 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UTextBlock* CountdownText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UProgressBar* HPBar;
 
 	/** 用于显示玩家分数的文本 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))

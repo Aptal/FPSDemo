@@ -86,10 +86,11 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
 
 	SetIsReplicated(true);
-	Character->WeaponComponent = this;
 	// add the weapon as an instance component to the character
 	Character->AddInstanceComponent(this);
+	Character->WeaponComponent = this;
 	Character->AmmoCurrent = AmmoMax;
+	Character->OnRep_AmmoChanged();
 
 	// Set up action bindings
 	if (AShootDemoPlayerController* PlayerController = Cast<AShootDemoPlayerController>(Character->GetController()))

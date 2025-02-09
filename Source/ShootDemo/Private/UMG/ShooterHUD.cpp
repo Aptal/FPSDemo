@@ -4,12 +4,17 @@
 #include "UMG/ShooterHUD.h"
 #include "UMG/ShooterUserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "../ShootDemoPlayerController.h"
+#include "ShootPlayerState.h"
 
 void AShooterHUD::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	if (WidgetClass) 
+void AShooterHUD::initWI()
+{
+	if (WidgetClass)
 	{
 		WidgetInstance = CreateWidget<UShooterUserWidget>(GetWorld(), WidgetClass);
 		if (WidgetInstance != nullptr)
@@ -18,5 +23,10 @@ void AShooterHUD::BeginPlay()
 			WidgetInstance->AddToViewport(3);
 		}
 	}
-
 }
+
+//void AShooterHUD::UpdateHPBar()
+//{
+//	AShootPlayerState* PS = Cast<AShootPlayerState>(ShooterController->PlayerState);
+//	WidgetInstance->UpdateHPBar(PS->Health / PS->MaxHealth);
+//}

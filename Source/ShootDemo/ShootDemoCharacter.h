@@ -61,15 +61,6 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	/* 主武器子弹同步start */
-	// 复制通知函数
-	UFUNCTION()
-	void OnRep_AmmoChanged();
-	// 多播更新UI
-	//UFUNCTION(NetMulticast, Reliable)
-	//void MulticastUpdateAmmo();
-	/* 主武器子弹同步end */
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
@@ -106,5 +97,14 @@ public:
 
 	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
 	int AmmoCurrent = 0;
+
+	/* 主武器子弹同步start */
+	// 复制通知函数
+	UFUNCTION()
+	void OnRep_AmmoChanged();
+	// 多播更新UI
+	//UFUNCTION(NetMulticast, Reliable)
+	//void MulticastUpdateAmmo();
+	/* 主武器子弹同步end */
 };
 

@@ -6,6 +6,7 @@
 #include "Components/VerticalBox.h"
 #include "Components/CanvasPanel.h"
 #include "Components/Image.h"
+#include "Components/ProgressBar.h"
 
 UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializer)
 	: Super(objectInitializer)
@@ -67,6 +68,15 @@ void UShooterUserWidget::UpdateCountdown(const int32 RemainingTime)
 	if (CountdownText)
 	{
 		CountdownText->SetText(FText::FromString(FString::Printf(TEXT("Count Down: %d"), RemainingTime)));
+	}
+}
+
+void UShooterUserWidget::UpdateHPBar(const float HP)
+{
+	if (HPBar)
+	{
+		// HP : CurHealthValue / MaxHealth
+		HPBar->SetPercent(HP);
 	}
 }
 

@@ -26,10 +26,13 @@ protected:
 	UPROPERTY(ReplicatedUsing = OnRep_ShootScore, EditAnyWhere, BlueprintReadOnly, category = "Play State score")
 	int32 PlayerScore;
 
-	UPROPERTY(Replicated, VisibleAnywhere)
+public:
+	UPROPERTY(ReplicatedUsing = OnRep_UpdateHP, Replicated, VisibleAnywhere, BlueprintReadWrite)
 	float Health = 200.0f;
 
-public:
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MaxHealth = 200.0f;
+
 	/** 增加分数（客户端调用，服务器执行） */
 	UFUNCTION(Server, Reliable, WithValidation)
 	void ServerAddScore(int32 ScoreAmount);
@@ -39,6 +42,9 @@ public:
 	/** 分数更新回调 */
 	UFUNCTION()
 	void OnRep_ShootScore();
+
+	UFUNCTION(BlueprintCallable)
+	void OnRep_UpdateHP();
 
 	/** 获取玩家分数 */
 	int32 GetPlayerScore() const { return PlayerScore; }

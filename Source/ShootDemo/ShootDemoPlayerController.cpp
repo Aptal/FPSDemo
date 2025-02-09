@@ -18,13 +18,20 @@ void AShootDemoPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(InputMappingContext, 0);
 	}
 
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShootDemoPlayerController::InitHUDWidget);
-	
+	//GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AShootDemoPlayerController::InitHUDWidget);
+	GameInfoHUD = Cast<AShooterHUD>(GetHUD());
+	if (GameInfoHUD)
+	{
+		GameInfoHUD->ShooterController = this;
+		GameInfoHUD->initWI();
+		GameInfoUI = GameInfoHUD->WidgetInstance;
+		GameInfoUI->UpdateHPBar(1.0);
+	}
 }
 
 void AShootDemoPlayerController::InitHUDWidget()
 {
-	GameInfoHUD = Cast<AShooterHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	GameInfoHUD = Cast<AShooterHUD>(GetHUD());
 	if (GameInfoHUD)
 	{
 		GameInfoUI = GameInfoHUD->WidgetInstance;

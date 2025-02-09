@@ -9,7 +9,7 @@
 AShootPlayerState::AShootPlayerState()
 {
 	PlayerScore = 0;
-
+	Health = MaxHealth;
 	bReplicates = true;
 }
 
@@ -36,6 +36,18 @@ void AShootPlayerState::OnRep_ShootScore()
 	{
 
 		PlayerController->GameInfoUI->UpdatePlayerScore(PlayerScore);
+	}
+}
+
+void AShootPlayerState::OnRep_UpdateHP()
+{
+	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetPlayerController());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Player's score updated: %d"), PlayerScore));
+
+	if (PlayerController && PlayerController->GameInfoUI)
+	{
+
+		PlayerController->GameInfoUI->UpdateHPBar(Health / MaxHealth);
 	}
 }
 

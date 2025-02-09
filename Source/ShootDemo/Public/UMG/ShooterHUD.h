@@ -7,18 +7,19 @@
 #include "ShooterHUD.generated.h"
 
 class UShooterUserWidget;
+class AShootDemoPlayerController;
 
 UCLASS()
 class SHOOTDEMO_API AShooterHUD : public AHUD
 {
 	GENERATED_BODY()
-
-public:
 	
 protected:
 	virtual void BeginPlay() override;
 
 public:
+
+	TObjectPtr<AShootDemoPlayerController> ShooterController;
 
 	UPROPERTY()
 	TObjectPtr<UShooterUserWidget> WidgetInstance;
@@ -26,4 +27,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UserWidget")
 	TSubclassOf<class UShooterUserWidget> WidgetClass;
 
+	void initWI();
+
+	/*UFUNCTION(BlueprintCallable, Category = "HUD")
+	void UpdateHPBar();*/
 };
