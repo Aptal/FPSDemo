@@ -111,11 +111,11 @@
 ### 作业2
 #### 积分、缩放设置面板
 <a name="CubeInfo"></a>
-![积分、缩放设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-1.png?raw=true "积分、缩放设置面板")
+![积分、缩放设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/2Homework/2-1.png?raw=true "积分、缩放设置面板")
 
 #### 时间，重要目标设置面板
 <a name="GameInfo"></a>
-![时间，重要目标设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/SecondHomework/2-2.png?raw=true "时间，重要目标设置面板")
+![时间，重要目标设置面板](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/2Homework/2-2.png?raw=true "时间，重要目标设置面板")
 
 #### 击中大小、重要目标对比
 “重要目标”被标记为黄金色，击中一次缩小一倍，两次消失
@@ -172,6 +172,14 @@
 ![死亡动画1](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2.png?raw=true)
 ![死亡动画2](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2-1.png?raw=true)
 
+#### todo  
+- [ ] 补充弹药npc的寻路、休息、打招呼
+- [ ] 多人视角下完整的玩家骨骼
+- [ ] 联网登陆
+
+### 02.11
+- 添加敌人攻击时的攻击范围判定
+- 添加打到玩家后，玩家血屏效果
 
 ### 02.09
 - 添加敌人AI，当视野范围内有玩家或者被玩家射到会追踪玩家，距离玩家一定距离内触发攻击动画

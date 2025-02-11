@@ -17,6 +17,7 @@ UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializ
 	AmmoMaxText = nullptr;
 	TotalScoreText = nullptr;
 	CrosshairsImg = nullptr;
+	BloodScreen = nullptr;
 }
 
 bool UShooterUserWidget::Initialize()
@@ -54,6 +55,11 @@ bool UShooterUserWidget::Initialize()
 
 	CrosshairsImg = Cast<UImage>(GetWidgetFromName("CrosshairsImg"));
 
+	BloodScreen = Cast<UImage>(GetWidgetFromName("BloodScreen"));
+	if (BloodScreen)
+	{
+		BloodScreen->SetVisibility(ESlateVisibility::Hidden);
+	}
 	return true;
 }
 

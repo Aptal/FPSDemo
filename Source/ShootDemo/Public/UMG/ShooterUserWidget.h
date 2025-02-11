@@ -86,4 +86,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
 	UVerticalBox* ScoreInfoBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (BindWidget))
+	UImage* BloodScreen;
 };

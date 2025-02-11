@@ -45,7 +45,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<AShooterHUD> GameInfoHUD;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TObjectPtr<UShooterUserWidget> GameInfoUI;
 
 };
