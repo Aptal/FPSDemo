@@ -8,7 +8,19 @@ public class ShootDemo : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG", "MoviePlayer", "AIModule" });
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"EnhancedInput", 
+			"UMG", 
+			"MoviePlayer", 
+			"AIModule",
+			"NavigationSystem",
+			"GameplayTasks"
+		});
         //PrivateDependencyModuleNames.AddRange(new string[] { "AIModule" });
     }
 }

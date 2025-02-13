@@ -60,6 +60,11 @@ void UTP_WeaponComponent::Fire()
 
 void UTP_WeaponComponent::Reload()
 {
+	if (Character)
+	{
+		Character->AmmoCurrent = AmmoMax;
+		Character->OnRep_AmmoChanged();
+	}
 }
 
 //void UTP_WeaponComponent::UpdateAmmoText(AShootDemoPlayerController* PlayerController)
@@ -83,7 +88,16 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	if (Character->IsLocallyControlled())
+	{
+		AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	}
+	else
+	{
+		FAttachmentTransformRules AttachmentRule2(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, false);
+
+		AttachToComponent(Character->GetMesh(), AttachmentRule2, FName(TEXT("hand_rSocket")));
+	}
 
 	SetIsReplicated(true);
 	// add the weapon as an instance component to the character

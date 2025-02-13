@@ -87,9 +87,9 @@
 - [ ] 3. 增加一个渲染feature（如描边等）或者优化当前的渲染功能（选做）
 
 ## 第七章
-- [ ] 1.实现NPC AI按照指定路线巡逻。
-- [ ] 2.实现NPC寻路过程中，累了主动去几个随机位置休息
-- [ ] 3.实现NPC遇到玩家以后主动和玩家进行打招呼。
+- [x] 1.实现NPC AI按照指定路线巡逻。
+- [x] 2.实现NPC寻路过程中，累了主动去几个随机位置休息
+- [x] 3.实现NPC遇到玩家以后主动和玩家进行打招呼。
 
 ## 第八周
 - [x] 1. 开启CS网络同步模式，开启角色和投掷物移动同步
@@ -172,8 +172,36 @@
 ![死亡动画1](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2.png?raw=true)
 ![死亡动画2](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/5-2-1.png?raw=true)
 
+### 作业7
+#### 路线巡航设置与展示
+路线使用spline设置如图  
+<a name="UIImg"></a>
+![7](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/7-1-1.png?raw=true)  
+
+NPC巡航时会增加疲惫值（Fatigue），达到阈值随机找路线内某点休息，然后重置疲惫值
+<a name="UIImg"></a>
+![7](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/7-1-2.png?raw=true)
+
+巡航移动动画展示
+<a name="UIImg"></a>
+![7](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/7-1-3.png?raw=true)
+
+#### NPC休息展示
+
+休息动画展示
+<a name="UIImg"></a>
+![7](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/7-2.png?raw=true)
+
+#### NPC与玩家交互
+
+通过PawnSensing判断前方是否有玩家，展示UI并给玩家补充子弹  
+<a name="UIImg"></a>
+![7](https://github.com/Aptal/FPSDemo/blob/main/HomeworkScreenshot/5Homework/7-3-1.png?raw=true)
+
+
+
 #### todo  
-- [ ] 补充弹药npc的寻路、休息、打招呼
+- [x] 补充弹药npc的寻路、休息、打招呼
 - [ ] 多人视角下完整的玩家骨骼
 - [ ] 联网登陆
 

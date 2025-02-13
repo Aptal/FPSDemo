@@ -23,8 +23,6 @@ void AEnemyBase::BeginPlay()
 	if (AIController && HasAuthority())
 	{
 		BlackboardComponent = AIController->GetBlackboardComponent();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("set blackboard")));
-
 	}
 }
 

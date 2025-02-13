@@ -94,6 +94,11 @@ public:
 	// 持有武器组件的指针
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	UTP_WeaponComponent* WeaponComponent;
+	
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Weapon")
+	void ServerReload();
+	virtual void ServerReload_Implementation();
+
 
 	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
 	int AmmoCurrent = 0;

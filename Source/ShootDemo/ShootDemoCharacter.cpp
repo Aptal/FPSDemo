@@ -143,6 +143,25 @@ void AShootDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(AShootDemoCharacter, AmmoCurrent);
 }
 
+void AShootDemoCharacter::ServerReload_Implementation()
+{
+	if (WeaponComponent)
+	{
+		AmmoCurrent = WeaponComponent->AmmoMax;
+		if (HasAuthority())
+		{
+			if (Cast<AShootDemoPlayerController>(GetController())->IsLocalController())
+			{
+				OnRep_AmmoChanged();
+			}
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("no gun")));
+	}
+}
+
 void AShootDemoCharacter::OnRep_AmmoChanged()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("ammo changed %d"), AmmoCurrent));

@@ -54,6 +54,7 @@ public:
 	void Fire();
 	
 	// »»µ¯
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void Reload();
 
 	void UpdateAmmoText(AShootDemoPlayerController* PlayerController);
