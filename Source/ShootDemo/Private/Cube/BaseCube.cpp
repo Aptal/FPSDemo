@@ -20,6 +20,7 @@ ABaseCube::ABaseCube()
 	CubeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube static mesh"));
 	CubeMesh->SetupAttachment(RootComponent);
 	CubeMesh->SetIsReplicated(true);
+
 	bReplicates = true;
 
 }
@@ -49,7 +50,11 @@ void ABaseCube::Tick(float DeltaTime)
 void ABaseCube::GetBuff(int importantBuff)
 {
 	Score *= importantBuff;
-	CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));
+	//CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));
+	//if (HasAuthority())
+	{
+		Multicast_SetMaterial();
+	}
 }
 
 
@@ -113,6 +118,24 @@ void ABaseCube::OnHitByProjectile_Implementation(AShootDemoPlayerController* Pla
 	if (HitCount == 2)
 	{
 		Destroy();
+	}
+}
+
+void ABaseCube::Multicast_SetMaterial_Implementation()
+{
+	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, GetWorld()->GetFirstPlayerController()->GetName());
+	CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));*/
+	FString cRole = (GetNetMode() == NM_Client) ? TEXT("Client") : TEXT("Server");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+		FString::Printf(TEXT("[%s] Multicast_SetMaterial called"), *cRole));
+
+	if (CubeMesh && CubeMesh->GetMaterial(1))
+	{
+		CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Material index invalid!"));
 	}
 }
 

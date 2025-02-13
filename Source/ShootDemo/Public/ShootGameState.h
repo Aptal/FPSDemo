@@ -22,7 +22,11 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:
+
+	UFUNCTION(NetMulticast, Reliable)
 	void InitScoreCube();
+	virtual void InitScoreCube_Implementation();
+
 
 	void UpdateCountdown();
 

@@ -24,11 +24,15 @@ AShootGameState::AShootGameState():Super()
 void AShootGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HasAuthority())
-	{
-		//GetWorldTimerManager().SetTimer(TH_CountDown, this, &AShootGameState::UpdateCountdown, 1.f, true, 0.0);
-		InitScoreCube();
-	}
+
+	FTimerHandle DelayTimerHandle;
+	GetWorldTimerManager().SetTimer(DelayTimerHandle, this, &AShootGameState::InitScoreCube, 1.0f, false);
+
+	//if (HasAuthority())
+	//{
+	//	//GetWorldTimerManager().SetTimer(TH_CountDown, this, &AShootGameState::UpdateCountdown, 1.f, true, 0.0);
+	//	InitScoreCube();
+	//}
 }
 
 void AShootGameState::Tick(float DeltaTime)
@@ -44,7 +48,12 @@ void AShootGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(AShootGameState, Seconds);
 }
 
-void AShootGameState::InitScoreCube()
+//void AShootGameState::InitScoreCube()
+//{
+//	
+//}
+
+void AShootGameState::InitScoreCube_Implementation()
 {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseCube::StaticClass(), ScoreCube);
 

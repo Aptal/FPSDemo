@@ -32,6 +32,12 @@ public:
 	virtual bool OnHitByProjectile_Validate(AShootDemoPlayerController* PlayerController);
 	virtual void OnHitByProjectile_Implementation(AShootDemoPlayerController* PlayerController);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_SetMaterial();
+	virtual void Multicast_SetMaterial_Implementation();
+
+	
+
 	UPROPERTY(EditAnyWhere, Replicated, category = "Cube Info")
 	int Score = 2;
 
