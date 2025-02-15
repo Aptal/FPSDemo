@@ -19,7 +19,9 @@ public class ShootDemo : ModuleRules
 			"MoviePlayer", 
 			"AIModule",
 			"NavigationSystem",
-			"GameplayTasks"
+			"GameplayTasks",
+			"OnlineSubsystem",
+			"OnlineSubsystemSteam"
 		});
         //PrivateDependencyModuleNames.AddRange(new string[] { "AIModule" });
     }

@@ -11,7 +11,7 @@
 #include "ShootDemoPlayerController.h"
 #include "UMG/ShooterHUD.h"
 #include "UMG/ShooterUserWidget.h"
-#include "Kismet/GameplayStatics.h"
+#include "ShootDemoCharacter.h"
 
 AShootDemoGameMode::AShootDemoGameMode()
 	: Super()
@@ -31,6 +31,12 @@ AShootDemoGameMode::AShootDemoGameMode()
 void AShootDemoGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!OnPlayerDied.IsBound())
+	{
+		OnPlayerDied.AddDynamic(this, &AShootDemoGameMode::PlayerDied);
+	}
+
 	GetWorldTimerManager().SetTimer(
 		TH_CountDown, 
 		this, 
@@ -41,34 +47,45 @@ void AShootDemoGameMode::InitGame(const FString& MapName, const FString& Options
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-	//InitScoreCube()
+}
+
+void AShootDemoGameMode::RestartPlayer(AController* NewPlayer)
+{
+	Super::RestartPlayer(NewPlayer);
+}
+
+void AShootDemoGameMode::PlayerDied(ACharacter* Character)
+{
+	//获得角色玩家控制器的引用
+	AController* CharacterController = Character->GetController();
+	AShootDemoCharacter* player = Cast<AShootDemoCharacter>(Character);
+	if (player)
+	{
+		player->RemoveInstanceComponent(player->WeaponComponent);
+		player->WeaponComponent = NULL;
+	}
+	RestartPlayer(CharacterController);
 }
 
 void AShootDemoGameMode::InitGameState()
 {
 	Super::InitGameState();
-
-	//UE_LOG(LogTemp, Warning, TEXT("game begin : init cube position and random select Important Goal Cube "));
-
-	//FVector v = FVector(1000,0,0);
-	//FRotator r = FRotator(0, 0, 0);
-	//   
-	//for (int i = 0; i < 5; ++i) {
-	//	FVector SpawnLocation = FVector(1000 + i * 100, 1200, 0);  
-	//	FRotator SpawnRotation = FRotator(0, 0, 0); 
-	//	FTransform SpawnTransform(SpawnRotation, SpawnLocation);
-	//	ScoreCube.Add(GetWorld()->SpawnActor<ABaseCube>(ABaseCube::StaticClass(), SpawnTransform));
-	//}
-	/*InitScoreCube();*/
 }
 
-//void AShootDemoGameMode::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-//{
-//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-//
-//	// 注册同步变量
-//	DOREPLIFETIME(AShootDemoGameMode, Seconds);
-//}
+void AShootDemoGameMode::HostLanGame()
+{
+	// 通过服务器方式进入关卡
+	GetWorld()->ServerTravel("Game/_GAME/Maps/MainLevel?listen");
+}
+
+void AShootDemoGameMode::JoinLanGame(FString address)
+{
+	APlayerController* LocalPlayerController = GetGameInstance()->GetFirstLocalPlayerController();
+	if (LocalPlayerController)
+	{
+		LocalPlayerController->ClientTravel(address, TRAVEL_Absolute);
+	}
+}
 
 void AShootDemoGameMode::Tick(float DeltaTime)
 {
@@ -123,37 +140,35 @@ void AShootDemoGameMode::UpdateCountdown()
 		GS->OnRep_Seconds();
 		if (GS->Seconds <= 0)
 		{
-			EndGame();
+			GS->EndGame();
 			GetWorldTimerManager().ClearTimer(TH_CountDown);
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+
 		}
 	}
 }
 
-//TArray<int32>& AShootDemoGameMode::GetScoreList() const
+//void AShootDemoGameMode::EndGame()
 //{
-//	// TODO: insert return statement here
+//	int i = 0;
 //	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 //	{
-//		TObjectPtr<APlayerController> PlayerController = It->Get();
-//		if (PlayerController)
+//		AShootDemoCharacter* player = Cast<AShootDemoCharacter>(It->Get()->GetCharacter());
+//		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("pc %d"), i++));
+//
+//		if (player)
 //		{
-//			TObjectPtr<AShootPlayerState> PlayerState = Cast<AShootPlayerState>(PlayerController->PlayerState);
-//			if (PlayerState)
-//			{
-//				PlayerScores.Add(PlayerState->GetPlayerScore());  // 假设 PlayerState 有一个 GetScore() 方法
-//			}
+//			MulticastShowScorePanel(player);
 //		}
 //	}
-//	return const_cast<TArray<int32>&>(PlayerScores);
+//	GetWorldTimerManager().ClearTimer(TH_CountDown);
+//	UGameplayStatics::SetGamePaused(GetWorld(), true);
 //}
-
-void AShootDemoGameMode::EndGame()
-{
-	int32 TotalScore = 0;
-	TObjectPtr<APlayerController> pc = GetWorld()->GetFirstPlayerController();
-	TObjectPtr<AShootDemoCharacter> Character = Cast<AShootDemoCharacter>(pc->GetCharacter());
-	Character->ShowScorePanel();
-}
+//
+//void AShootDemoGameMode::MulticastShowScorePanel_Implementation(AShootDemoCharacter* Character)
+//{
+//	Character->ShowScorePanel();
+//}
 
 //void AShootDemoGameMode::OnRep_Seconds()
 //{

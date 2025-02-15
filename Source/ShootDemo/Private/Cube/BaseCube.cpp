@@ -104,8 +104,8 @@ void ABaseCube::OnHitByProjectile_Implementation(AShootDemoPlayerController* Pla
 	{
 		if (AShootPlayerState* PS = Cast<AShootPlayerState>(PlayerController->PlayerState))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, PlayerController->GetName());
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("score %d  --- %d"), Score, PS->GetPlayerScore()));
+			/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, PlayerController->GetName());
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("score %d  --- %d"), Score, PS->GetPlayerScore()));*/
 
 			PS->ServerAddScore(Score);
 		}
@@ -125,9 +125,9 @@ void ABaseCube::Multicast_SetMaterial_Implementation()
 {
 	/*GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, GetWorld()->GetFirstPlayerController()->GetName());
 	CubeMesh->SetMaterial(0, CubeMesh->GetMaterial(1));*/
-	FString cRole = (GetNetMode() == NM_Client) ? TEXT("Client") : TEXT("Server");
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
-		FString::Printf(TEXT("[%s] Multicast_SetMaterial called"), *cRole));
+	//FString cRole = (GetNetMode() == NM_Client) ? TEXT("Client") : TEXT("Server");
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
+	//	FString::Printf(TEXT("[%s] Multicast_SetMaterial called"), *cRole));
 
 	if (CubeMesh && CubeMesh->GetMaterial(1))
 	{

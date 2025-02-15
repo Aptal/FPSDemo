@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTaskNode_SetPatrolPoint::ExecuteTask(UBehaviorTreeCompone
 	{
 		return EBTNodeResult::Failed;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("Fatigue %.1f"), NPC->GetFatigue()));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, FString::Printf(TEXT("Fatigue %.1f"), NPC->GetFatigue()));
 
 	if (NPC->IsResting() == false)
 	{
@@ -38,7 +38,7 @@ EBTNodeResult::Type UBTTaskNode_SetPatrolPoint::ExecuteTask(UBehaviorTreeCompone
 
 	if (NPC->GetFatigue() >= NPC->FATIGUE_THRESHOLD)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("start Fatigue %.1f"), NPC->GetFatigue()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("start Fatigue %.1f"), NPC->GetFatigue()));
 
 		UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 		if (BlackboardComp)

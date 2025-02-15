@@ -59,16 +59,18 @@ public:
 
 	void UpdateAmmoText(AShootDemoPlayerController* PlayerController);
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void FailWeapon();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-private:
-	/** The Character holding this weapon*/
-	AShootDemoCharacter* Character;
-
 public:
+	/** The Character holding this weapon*/
+	UPROPERTY(BlueprintReadWrite);
+	AShootDemoCharacter* Character;
 	
 	//UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
 	//int AmmoCurrent = 0;
@@ -81,6 +83,7 @@ public:
 	//UFUNCTION(NetMulticast, Reliable)
 	//void MulticastUpdateAmmo();
 
-	UPROPERTY(EditAnyWhere)
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	int AmmoMax;
+
 };

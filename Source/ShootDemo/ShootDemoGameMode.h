@@ -7,8 +7,11 @@
 #include "Net/UnrealNetwork.h"
 #include "ShootDemoGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerDiedSignature, ACharacter*, Character);
+
 class UGameplayStatics;
 class ABaseCube;
+class AShootDemoCharacter;
 
 UCLASS(minimalapi)
 class AShootDemoGameMode : public AGameModeBase
@@ -18,46 +21,41 @@ class AShootDemoGameMode : public AGameModeBase
 public:
 	AShootDemoGameMode();
 
+	const FOnPlayerDiedSignature& GetOnPlayerDied() const { return OnPlayerDied; }
+
+	//尝试生成玩家的Pawn。
+	virtual void RestartPlayer(AController* NewPlayer) override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void InitGameState() override;
 
-	//virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UFUNCTION(BlueprintCallable, Category = "LanGame")
+	void HostLanGame();
 
+	UFUNCTION(BlueprintCallable, Category = "LanGame")
+	void JoinLanGame(FString address);
+
+	UFUNCTION()
+	virtual void PlayerDied(ACharacter* Character);
+
+	//要绑定委托的签名。
+	UPROPERTY()
+	FOnPlayerDiedSignature OnPlayerDied;
 
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	//void InitScoreCube();
-
 	void UpdateCountdown();
-
-	//TArray<int32>& GetScoreList() const;
 
 	void EndGame();
 
-	//TMap<FName, int> hitCount;
-
-	//UPROPERTY(EditAnyWhere, category = "Game Info")
-	//int ImportantGoalCount = 3;
-
-	//UPROPERTY(EditAnyWhere, category = "Game Info")
-	//int ImportantBuff = 2;
-
-	//UPROPERTY(ReplicatedUsing = OnRep_Seconds, EditAnyWhere, BluePrintReadWrite, category = "Time Info", meta = (AllowPrivateAccess = "true"))
-	//int Seconds = 30;
+	/*UFUNCTION(NetMulticast, Reliable)
+	void MulticastShowScorePanel(AShootDemoCharacter* Character);
+	void MulticastShowScorePanel_Implementation(AShootDemoCharacter* Character);*/
 
 	FTimerHandle TH_CountDown;
-
-	//TArray<AActor*> ScoreCube;
-
-	//// 函数声明，用于处理Seconds变量复制时的回调
-	//UFUNCTION()
-	//void OnRep_Seconds();
-
-	// 函数声明，用于将服务器的时间同步到客户端
-	//void Multicast_SyncSeconds(int NewSeconds);
 
 };
 

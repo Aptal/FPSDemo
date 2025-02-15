@@ -7,6 +7,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
+#include "ShootGameState.h"
 
 UShooterUserWidget::UShooterUserWidget(const FObjectInitializer& objectInitializer)
 	: Super(objectInitializer)
@@ -135,11 +136,42 @@ void UShooterUserWidget::ShowScorePanel(const TArray<int32>& PlayerScores)
 			}
 		}
 
-		TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("All Players Total Scores: %d"), totalScore)));
+		//TotalScoreText->SetText(FText::FromString(FString::Printf(TEXT("All Players Total Scores: %d"), totalScore)));
 
 		ScorePanel->SetVisibility(ESlateVisibility::Visible);
 	}
 }
+
+void UShooterUserWidget::ShowScorePanel2()
+{
+	if (ScorePanel)
+	{
+		int32 totalScore = 0;
+		ScoreInfoBox->ClearChildren();
+
+		TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetGameState());
+		if (GS)
+		{
+			for (int32 i = 0; i < GS->PlayerScores.Num(); ++i)
+			{
+				totalScore += GS->PlayerScores[i];
+
+				UTextBlock* ScoreText = NewObject<UTextBlock>(this);
+				if (ScoreText)
+				{
+					FString PlayerName = (GS->PlayerName.IsValidIndex(i)) ? GS->PlayerName[i] : FString("Player");
+					FString ScoreDisplayText = FString::Printf(TEXT("%s: %d"), *PlayerName, GS->PlayerScores[i]);
+
+					ScoreText->SetText(FText::FromString(ScoreDisplayText));
+					ScoreInfoBox->AddChildToVerticalBox(ScoreText);
+				}
+			}
+
+			ScorePanel->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
+}
+
 
 void UShooterUserWidget::HideScorePanel()
 {

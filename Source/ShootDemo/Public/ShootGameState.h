@@ -21,16 +21,39 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	FVector GetEnemyRandomSpawnLocation();
+
 public:
+	UFUNCTION(Server, Reliable)
+	void InitScoreCube();
+	void InitScoreCube_Implementation();
+
 
 	UFUNCTION(NetMulticast, Reliable)
-	void InitScoreCube();
-	virtual void InitScoreCube_Implementation();
+	void MulticastCubeBuff(ABaseCube* cube);
+	virtual void MulticastCubeBuff_Implementation(ABaseCube* cube);
 
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void NetMulticast_SpawnEnemy();
+	virtual void NetMulticast_SpawnEnemy_Implementation();
+
+	void EndGame();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastShowScorePanel(AShootDemoCharacter* Character);
+	void MulticastShowScorePanel_Implementation(AShootDemoCharacter* Character);
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnEnemyies();
+
+	UFUNCTION(BlueprintCallable)
+	void OnEnemyDeath();
 
 	void UpdateCountdown();
 
-	TArray<int32>& GetScoreList() const;
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Server_GetScoreList();
+	void Server_GetScoreList_Implementation();
 
 	UPROPERTY(EditAnyWhere, category = "Game Info")
 	int ImportantGoalCount = 3;
@@ -38,8 +61,25 @@ public:
 	UPROPERTY(EditAnyWhere, category = "Game Info")
 	int ImportantBuff = 2;
 
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class AEnemyBase> EnemyClass;
+
+	UPROPERTY(EditAnyWhere, BluePrintReadWrite, category = "Game Info")
+	int EnemyNumber = 5;
+
+	UPROPERTY(EditAnyWhere, BluePrintReadWrite, category = "Game Info")
+	int CurEnemyNumber = 0;
+
 	UPROPERTY(ReplicatedUsing = OnRep_Seconds, EditAnyWhere, BluePrintReadWrite, category = "Time Info", meta = (AllowPrivateAccess = "true"))
 	int Seconds = 30;
+
+	UPROPERTY(Replicated, EditAnyWhere, BluePrintReadWrite, category = "Game Info")
+	TArray<int32> PlayerScores;
+	UPROPERTY(Replicated, EditAnyWhere, BluePrintReadWrite, category = "Game Info")
+	TArray<FString> PlayerName;
+	/*UPROPERTY(Replicated, EditAnyWhere, BluePrintReadWrite, category = "Game Info")
+	TMap<int32> PlayerScoresInfo;*/
+
 
 	//FTimerHandle TH_CountDown;
 
@@ -50,6 +90,6 @@ public:
 	UFUNCTION()
 	void OnRep_Seconds();
 
-protected:
-	mutable TArray<int32> PlayerScores;
+//protected:
+//	mutable TArray<int32> PlayerScores;
 };

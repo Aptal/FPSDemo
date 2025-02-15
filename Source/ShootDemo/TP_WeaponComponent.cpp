@@ -67,6 +67,22 @@ void UTP_WeaponComponent::Reload()
 	}
 }
 
+void UTP_WeaponComponent::FailWeapon()
+{
+	if (Character == nullptr)
+		return;
+	if (APlayerController* PlayerController = Cast<APlayerController>(Character->GetController()))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->RemoveMappingContext(FireMappingContext);
+		}
+	}
+	Character->RemoveInstanceComponent(Character->WeaponComponent);
+	Character = nullptr;
+
+}
+
 //void UTP_WeaponComponent::UpdateAmmoText(AShootDemoPlayerController* PlayerController)
 //{
 //	if (PlayerController && PlayerController->GameInfoUI)
@@ -94,14 +110,13 @@ bool UTP_WeaponComponent::AttachWeapon(AShootDemoCharacter* TargetCharacter)
 	}
 	else
 	{
-		FAttachmentTransformRules AttachmentRule2(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepRelative, false);
+		FAttachmentTransformRules AttachmentRule2(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, true);
 
-		AttachToComponent(Character->GetMesh(), AttachmentRule2, FName(TEXT("hand_rSocket")));
+		AttachToComponent(Character->GetTP_Body(), AttachmentRule2, FName(TEXT("hand_rSocket")));
 	}
 
-	SetIsReplicated(true);
 	// add the weapon as an instance component to the character
-	Character->AddInstanceComponent(this);
+	//Character->AddInstanceComponent(this);
 	Character->WeaponComponent = this;
 	Character->AmmoCurrent = AmmoMax;
 	Character->OnRep_AmmoChanged();

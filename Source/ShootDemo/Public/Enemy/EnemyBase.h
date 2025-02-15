@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "EnemyBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDeath);
+
 class UBlackboardComponent;
 class AAIController;
 class AShootDemoCharacter;
@@ -17,6 +19,12 @@ class SHOOTDEMO_API AEnemyBase : public ACharacter
 
 public:
 	AEnemyBase();
+
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnEnemyDeath OnDeathDelegate;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 EnemyScore = 2;
 
 private:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = "EnemyState", meta = (AllowPrivateAccess = "true"))
@@ -65,4 +73,6 @@ public:
 
 	// Õ¯¬Á∏¥÷∆…Ë÷√
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void ResetTarget();
 };

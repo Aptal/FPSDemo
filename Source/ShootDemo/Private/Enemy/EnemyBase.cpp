@@ -5,6 +5,7 @@
 #include "Net/UnrealNetwork.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -73,16 +74,6 @@ void AEnemyBase::MulticastDeathAnmi_Implementation()
 		{
 			BlackboardComponent->SetValueAsBool("IsDeath", true);
 		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("111111111")));
-
-		}
-
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("-----")));
-
 	}
 }
 
@@ -99,4 +90,11 @@ void AEnemyBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifeti
 	//DOREPLIFETIME(AEnemyBase, targetPlayerController);
 	DOREPLIFETIME(AEnemyBase, targetPlayer);
 
+}
+
+void AEnemyBase::ResetTarget()
+{
+	targetPlayer = nullptr;
+	IsDamaged = false;
+	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 }

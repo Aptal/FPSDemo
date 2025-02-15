@@ -15,6 +15,7 @@ class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
 class UTP_WeaponComponent;
+class AEnemyBase;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -26,6 +27,9 @@ class AShootDemoCharacter : public ACharacter
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh1P;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	USkeletalMeshComponent* TP_Body;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -63,8 +67,18 @@ protected:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	//当在游戏过程中被销毁时调用。
+	virtual void Destroyed();
+
+	//调用GameMode类以重新启动玩家角色。
+	UFUNCTION(BlueprintCallable)
+	void CallRestartPlayer(AEnemyBase* Enemy);
+
 public:
+	UFUNCTION(BlueprintCallable)
 	void ShowScorePanel();
+
+	UFUNCTION(BlueprintCallable)
 	void HideScorePanel();
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
@@ -88,11 +102,13 @@ protected:
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+	USkeletalMeshComponent* GetTP_Body() const { return TP_Body; }
+
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 	// 持有武器组件的指针
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Weapon")
 	UTP_WeaponComponent* WeaponComponent;
 	
 	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Weapon")
@@ -100,12 +116,12 @@ public:
 	virtual void ServerReload_Implementation();
 
 
-	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged)
+	UPROPERTY(ReplicatedUsing = OnRep_AmmoChanged, BlueprintReadWrite)
 	int AmmoCurrent = 0;
 
 	/* 主武器子弹同步start */
 	// 复制通知函数
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void OnRep_AmmoChanged();
 	// 多播更新UI
 	//UFUNCTION(NetMulticast, Reliable)

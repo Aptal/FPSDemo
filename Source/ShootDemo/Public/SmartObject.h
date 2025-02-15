@@ -8,6 +8,7 @@
 
 class UArrowComponent;
 class UBehaviorTree;
+class UBillboardComponent;
 
 UCLASS()
 class SHOOTDEMO_API ASmartObject : public AActor

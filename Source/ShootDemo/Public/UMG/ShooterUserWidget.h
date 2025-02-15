@@ -48,6 +48,9 @@ public:
 	void ShowScorePanel(const TArray<int32>& PlayerScores);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
+	void ShowScorePanel2();
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerScore")
 	void HideScorePanel();
 
 

@@ -12,8 +12,9 @@
 #include "../ShootDemoPlayerController.h"
 #include "UMG/ShooterHUD.h"
 #include "UMG/ShooterUserWidget.h"
-#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Enemy/EnemyBase.h"
+#include "../ShootDemoCharacter.h"
 
 AShootGameState::AShootGameState():Super()
 {
@@ -46,6 +47,9 @@ void AShootGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 
 	// 注册同步变量
 	DOREPLIFETIME(AShootGameState, Seconds);
+	DOREPLIFETIME(AShootGameState, PlayerScores);
+	DOREPLIFETIME(AShootGameState, ScoreCube);
+	DOREPLIFETIME(AShootGameState, PlayerName);
 }
 
 //void AShootGameState::InitScoreCube()
@@ -73,9 +77,52 @@ void AShootGameState::InitScoreCube_Implementation()
 	{
 		if (ABaseCube* cube = Cast<ABaseCube>(ScoreCube[Numbers[i]]))
 		{
-			cube->GetBuff(ImportantBuff);
+			MulticastCubeBuff(cube);
 		}
 	}
+}
+
+void AShootGameState::MulticastCubeBuff_Implementation(ABaseCube* cube)
+{
+	cube->GetBuff(ImportantBuff);
+}
+
+FVector AShootGameState::GetEnemyRandomSpawnLocation()
+{
+	float X = FMath::RandRange(2050.f, 2750.f);
+	float Y = FMath::RandRange(3000.f, 3300.f);
+	float Z = 100.f;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("spawn enemy %.1f %.1f"), X, Y));
+	FVector SpawnLocation(X, Y, Z);
+
+	return SpawnLocation;
+}
+
+void AShootGameState::NetMulticast_SpawnEnemy_Implementation()
+{
+	FVector SpawnLocation = GetEnemyRandomSpawnLocation();
+	FRotator SpawnRotation = FRotator(0, FMath::RandRange(0.f, 360.f), 0.f);
+	AEnemyBase* NewEnemy = GetWorld()->SpawnActor<AEnemyBase>(EnemyClass, SpawnLocation, SpawnRotation);
+
+	if (NewEnemy)
+	{
+		// 设置敌人死亡时的回调，确保死亡后会生成新敌人
+		NewEnemy->OnDeathDelegate.AddDynamic(this, &AShootGameState::OnEnemyDeath);
+	}
+}
+
+void AShootGameState::SpawnEnemyies()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::White, FString::Printf(TEXT("spawn enemy")));
+	for (int32 i = 0; i < EnemyNumber; ++i)
+	{
+		NetMulticast_SpawnEnemy();
+	}
+}
+
+void AShootGameState::OnEnemyDeath()
+{
+	NetMulticast_SpawnEnemy();
 }
 
 //void AShootGameState::UpdateCountdown()
@@ -100,7 +147,7 @@ void AShootGameState::InitScoreCube_Implementation()
 //	}
 //}
 
-TArray<int32>& AShootGameState::GetScoreList() const
+void AShootGameState::Server_GetScoreList_Implementation() 
 {
 	// TODO: insert return statement here
 	if (GetWorld())
@@ -110,15 +157,15 @@ TArray<int32>& AShootGameState::GetScoreList() const
 			TObjectPtr<APlayerController> PlayerController = It->Get();
 			if (PlayerController)
 			{
+				PlayerName.Add(PlayerController->GetName());
 				TObjectPtr<AShootPlayerState> PlayerState = Cast<AShootPlayerState>(PlayerController->PlayerState);
 				if (PlayerState)
 				{
-					PlayerScores.Add(PlayerState->GetPlayerScore());  // 假设 PlayerState 有一个 GetScore() 方法
+					PlayerScores.Add(PlayerState->GetPlayerScore());
 				}
 			}
 		}
 	}
-	return const_cast<TArray<int32>&>(PlayerScores);
 }
 
 void AShootGameState::OnRep_Seconds()
@@ -128,4 +175,25 @@ void AShootGameState::OnRep_Seconds()
 	{
 		PlayerController->GameInfoUI->UpdateCountdown(Seconds);
 	}
+}
+
+void AShootGameState::EndGame()
+{
+	Seconds = 0;
+	OnRep_Seconds();
+	Server_GetScoreList();
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		AShootDemoCharacter* player = Cast<AShootDemoCharacter>(It->Get()->GetCharacter());
+	
+		if (player)
+		{
+			MulticastShowScorePanel(player);
+		}
+	}
+}
+
+void AShootGameState::MulticastShowScorePanel_Implementation(AShootDemoCharacter* Character)
+{
+	Character->ShowScorePanel();
 }

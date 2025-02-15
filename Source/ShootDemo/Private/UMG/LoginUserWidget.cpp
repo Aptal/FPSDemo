@@ -22,8 +22,6 @@ void ULoginUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-    UE_LOG(LogTemp, Warning, TEXT("ULoginWidget::NativeConstruct()"));
-
     if (UButton* SBtn = Cast<UButton>(GetWidgetFromName("LoginButton")))
     {
         LoginButton = SBtn;
@@ -64,8 +62,6 @@ void ULoginUserWidget::OnLoginButtonClicked()
         UE_LOG(LogTemp, Warning, TEXT("Username or Password must not be empty"));
         return;
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("Login button clicked"));
 
     UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
 

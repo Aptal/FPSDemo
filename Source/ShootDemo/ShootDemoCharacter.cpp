@@ -14,8 +14,10 @@
 #include "ShootDemoPlayerController.h"
 #include "UMG/ShooterUserWidget.h"
 #include "ShootGameState.h"
+#include "ShootDemoGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Enemy/EnemyBase.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -32,6 +34,11 @@ AShootDemoCharacter::AShootDemoCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	TP_Body = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("TP_Body"));
+	TP_Body->SetupAttachment(RootComponent);
+	TP_Body->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
+	TP_Body->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
@@ -72,14 +79,12 @@ void AShootDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 		EnhancedInputComponent->BindAction(IA_ScorePanel, ETriggerEvent::Started, this, &AShootDemoCharacter::ShowScorePanel);
 		EnhancedInputComponent->BindAction(IA_ScorePanel, ETriggerEvent::Completed, this, &AShootDemoCharacter::HideScorePanel);
-
-
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
-
+	//PlayerInputComponent->BindAction("Restart", IE_Pressed, this, &AShootDemoCharacter::CallRestartPlayer);
 }
 
 void AShootDemoCharacter::Move(const FInputActionValue& Value)
@@ -110,15 +115,25 @@ void AShootDemoCharacter::Look(const FInputActionValue& Value)
 
 void AShootDemoCharacter::ShowScorePanel()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("press")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("press")));
 
 	TObjectPtr<AShootDemoPlayerController> PlayerController = Cast<AShootDemoPlayerController>(GetController());
 	if (PlayerController && GetWorld() != nullptr)
 	{
 		if (PlayerController->GameInfoUI)
 		{
-			TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetGameState());
-			PlayerController->GameInfoUI->ShowScorePanel(GS->GetScoreList());
+			PlayerController->bShowMouseCursor = true;
+
+			// 切换输入模式为 UI 交互模式
+			FInputModeUIOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+			//GetWorld()->GetAuthGameMode()->GetGameState();
+			//TObjectPtr<AShootGameState> GS = Cast<AShootGameState>(GetWorld()->GetGameState());
+			//GS->Server_GetScoreList();
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, PlayerController->GetName());
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("list size %d"), GS->PlayerScores.Num()));
+			//PlayerController->GameInfoUI->ShowScorePanel(GS->PlayerScores);
+			PlayerController->GameInfoUI->ShowScorePanel2();
 		}
 	}
 }
@@ -141,6 +156,48 @@ void AShootDemoCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AShootDemoCharacter, AmmoCurrent);
+}
+
+void AShootDemoCharacter::Destroyed()
+{
+	Super::Destroyed();
+
+	//绑定至GameMode中的OnPlayerDied事件
+	if (UWorld* World = GetWorld())
+	{
+		if (AShootDemoGameMode* GameMode = Cast<AShootDemoGameMode>(World->GetAuthGameMode()))
+		{
+			GameMode->GetOnPlayerDied().Broadcast(this);
+		}
+	}
+}
+
+void AShootDemoCharacter::CallRestartPlayer(AEnemyBase* Enemy)
+{
+	// 获得Pawn控制器的引用。
+	AController* CortollerRef = GetController();
+
+	/*AmmoCurrent = 0;
+	OnRep_AmmoChanged();*/
+	if (WeaponComponent)
+	{
+		RemoveInstanceComponent(WeaponComponent);
+	}
+	//WeaponComponent->Character = nullptr;
+	//WeaponComponent = NULL;
+	Enemy->ResetTarget();
+
+	//销毁玩家
+	Destroy();
+
+	//在世界中获得World和GameMode，以调用其重启玩家函数。
+	if (UWorld* World = GetWorld())
+	{
+		if (AShootDemoGameMode* GameMode = Cast<AShootDemoGameMode>(World->GetAuthGameMode()))
+		{
+			GameMode->RestartPlayer(CortollerRef);
+		}
+	}
 }
 
 void AShootDemoCharacter::ServerReload_Implementation()
